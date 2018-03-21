@@ -1,0 +1,195 @@
+<ng-include src="'static/partials/header.html'"></ng-include>
+<h1> Welcome {{ user.name }}!</h1>
+<div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
+<div ng-show="success" class="alert alert-success">{{successMessage}}</div>
+<div class="row row-eq-height">
+    <div class="col-md-6 col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Follows Schedule
+                <div class="flipswitch pull-right" style="margin-top:-4px;">
+                    <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="follow_status"  ng-model="account.follow_schedule_status" ng-Change="changeFollowScheduleStatus()">
+                    <label class="flipswitch-label" for="follow_status">
+                        <div class="flipswitch-inner"></div>
+                        <div class="flipswitch-switch"></div>
+                    </label>
+                </div>
+                <div class="pull-right" style="margin-right:10px;">
+                    <!--<a ng-click="openFollowSchedule()">-->
+                        <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+                        <!--Add schedule-->
+                    <!--</a>-->
+                </div>
+            </div>
+            <div class="panel-body" style="max-height:400px;overflow-y:auto;">
+                <div class="table-responsive" id="follows_schedules">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th class="text-right">Start Time</th>
+                            <th class="text-right">End Time</th>
+                            <th class="text-right">Max. Follows</th>
+                            <th width="50" class="text-center">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="follow-schedule-row" ng-repeat="schedule in follow_schedules">
+                            <td class="schedule-start-date">{{schedule.start_time | getDate }}</td>
+                            <td class="text-right schedule-start-time">{{schedule.start_time | getTime }}</td>
+                            <td class="text-right schedule-end-time">{{schedule.end_time | getTime }}</td>
+                            <td class="text-right max-follows">{{schedule.max_follows | getMax }}</td>
+                            <td class="text-center">
+                                <a ng-click="delFollowSchedule(schedule.id)" title="Delete this schedule"
+                                   class="text-danger btn-delete">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr class="zero-records" ng-if="follow_schedules.length < 1">
+                            <td colspan="5">Follows not scheduled.
+                                <!--<a ng-click="openFollowSchedule()">-->
+                                    <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+                                    <!--Click here to add a schedule.-->
+                                <!--</a>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                UnFollows Schedule
+                <div class="flipswitch pull-right" style="margin-top:-4px;">
+                    <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="unfollow_all_status" ng-model="account.unfollow_schedule_status" ng-Change="changeUnFollowScheduleStatus()">
+                    <label class="flipswitch-label" for="unfollow_all_status">
+                        <div class="flipswitch-inner"></div>
+                        <div class="flipswitch-switch"></div>
+                    </label>
+                </div>
+                <div class="pull-right">
+                    <label>
+                        <input type="checkbox" ng-model="account.unfollow_schedule_option">
+                        unfollow all
+                    </label>
+                </div>
+                <div class="pull-right" style="margin-right:10px;">
+                    <!--<a ng-click="openUnFollowSchedule()">-->
+                        <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+                        <!--Add schedule-->
+                    <!--</a>-->
+                </div>
+            </div>
+            <div class="panel-body" style="max-height:400px;overflow-y:auto;">
+                <div class="table-responsive" id="unfollows_schedules">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Start Date</th>
+                            <th class="text-right">Start Time</th>
+                            <th class="text-right">End Time</th>
+                            <th class="text-right">Max. Unfollows</th>
+                            <th width="50" class="text-center">&nbsp;</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="follow-schedule-row" ng-repeat="schedule in unfollow_schedules">
+                            <td class="schedule-start-date">{{schedule.start_time | getDate }}</td>
+                            <td class="text-right schedule-start-time">{{schedule.start_time | getTime }}</td>
+                            <td class="text-right schedule-end-time">{{schedule.end_time | getTime }}</td>
+                            <td class="text-right max-follows">{{schedule.max_unfollows | getMax }}</td>
+                            <td class="text-center">
+                                <a ng-click="delUnFollowSchedule(schedule.id)" title="Delete this schedule"
+                                   class="text-danger btn-delete">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr class="zero-records" ng-if="unfollow_schedules.length < 1">
+                            <td colspan="5">UnFollows not scheduled.
+                                <!--<a ng-click="openUnFollowSchedule()">-->
+                                    <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+                                    <!--Click here to add a schedule.-->
+                                <!--</a>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Follows Lists
+        <div class="pull-right" style="margin-top:-5px;">
+            <button class="btn btn-sm btn-success" id="upload_follows_list" ng-click="openUploadList()">
+                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                Upload List
+            </button>
+        </div>
+        <div class="pull-right" style="margin-top:-5px;margin-right:20px;">
+            <button class="btn btn-sm btn-danger" id="clear_blacklist" ng-click="clearList()">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                Clear Black List
+            </button>
+        </div>
+    </div>
+    <div id="follows_lists" class="panel-body" style="max-height:400px; overflow-y:auto;">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th width="160">Added On</th>
+                    <th width="120">List Name</th>
+                    <th width="160">Started On</th>
+                    <th width="300">Progress</th>
+                    <th width="120">Last Followed</th>
+                    <th width="30" class="text-center">Action</th>
+                    <th width="30" class="text-center">Complete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="follow-list-row warning" ng-repeat="list in lists">
+                    <td class="follow-added-on">{{list.added_on | getDate}} {{list.added_on | getTime}}</td>
+                    <td class="list-name">{{list.listname}}</td>
+                    <td class="follow-started-on">{{list.started_on | getDate}} {{list.started_on | getTime}}</td>
+                    <td>
+                        <div class="progress ">
+                            <div style="width: {{Math.round(100*list.progress/list.total_count)}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="30"
+                                 role="progressbar" class="progress-bar">
+                                <span class="sr-only"></span>
+                            </div>
+
+                            <span class="followers-list-progress-status progress-status">
+				                {{list.progress | thousandSuffix }} / {{list.total_count | thousandSuffix}}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="last-followed">{{list.last_followed}}</td>
+                    <td class="text-center">
+                        <a ng-click="delList(list.id)" title="Delete this List"
+                           class="text-danger btn-delete">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <span ng-if="list.complete_status" class="text-success glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </td>
+                </tr>
+                <tr class="zero-records" ng-if="lists.length < 1">
+                    <td colspan="7">No list to follow. Upload a list to start following.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

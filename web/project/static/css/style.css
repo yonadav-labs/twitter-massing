@@ -1,0 +1,265 @@
+/* Space out content a bit */
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+/* Custom page header */
+.header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    position: relative;
+    float: left;
+    width: 100%;
+
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    width: 20%;
+    float: left;
+}
+
+/* Custom page footer */
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* Customize container
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}*/
+.container-narrow > hr {
+    margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.jumbotron .btn {
+    padding: 14px 24px;
+    font-size: 21px;
+}
+
+/* Supporting marketing content */
+.marketing {
+    margin: 40px 0;
+}
+
+.marketing p + h4 {
+    margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+}
+
+.show_deck {
+    width: 200%;
+    margin-left: -14%;
+    margin-top: 19px;
+}
+
+.show_user {
+    width: 330%;
+    margin-left: -28%;
+    margin-top: 19px;
+}
+
+.search-box {
+    float: right;
+}
+
+.width-half {
+    width: 66%;
+}
+
+.counter {
+    float: left;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+
+.divider {
+    border-bottom: 1px dotted #cccccc;
+    margin: 5px 0;
+    clear: both;
+    width: 100%;
+}
+
+.progress .progress-status {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.progress-bar {
+    background-color: #5cb85c;
+}
+
+.progress {
+    margin-bottom: 0px;
+    position: relative;
+    text-align: center;
+}
+
+.pool-box:hover {
+    background-color: #f5f5f5;
+    border: 1px solid #335E79;
+}
+
+.pool-box {
+    border: 1px solid #efefef;
+    border-radius: 5px;
+    width: 100%;
+    float: left;
+    padding: 10px;
+}
+
+.flipswitch {
+    position: relative;
+    width: 100px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.flipswitch input[type=checkbox] {
+    display: none;
+}
+
+.flipswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #999999;
+    border-radius: 25px;
+}
+
+label {
+    font-weight: 400;
+}
+
+.flipswitch-inner {
+    width: 200%;
+    margin-left: -100%;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.flipswitch-switch {
+    width: 18px;
+    height: 18px;
+    margin: 5px;
+    background: #FFFFFF;
+    border: 2px solid #999999;
+    border-radius: 25px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 71px;
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.flipswitch-inner:before {
+    content: "ON";
+    padding-left: 12px;
+    background-color: #7EC53C;
+    color: #FFFFFF;
+}
+
+.flipswitch-inner:before, .flipswitch-inner:after {
+    float: left;
+    width: 50%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    color: white;
+    font-family: Trebuchet, Arial, sans-serif;
+    font-weight: bold;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.flipswitch-inner:after {
+    content: "OFF";
+    padding-right: 12px;
+    background-color: red;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.flipswitch-cb + .flipswitch-label .loading {
+    display: none;
+}
+
+.flipswitch-cb:checked + .flipswitch-label .flipswitch-inner {
+    margin-left: 0;
+}
+
+.flipswitch-cb:checked + .flipswitch-label .flipswitch-switch {
+    right: 1px;
+}
+
+.flipswitch-cb:disabled + .flipswitch-label .flipswitch-switch {
+    display: none;
+}
+
+.dialog-title {
+    padding: 10px;
+    font-weight: 600;
+    color: #FFF;
+    background-color: #EC971F;
+    border-radius: 5px 5px 0 0;
+}
+
+.btn-danger {
+    color: #F56E6E;
+    background-color: #F9F9F9;
+    border-color: #CCC;
+}

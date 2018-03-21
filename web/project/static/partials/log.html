@@ -1,0 +1,43 @@
+<ng-include src="'static/partials/header.html'" class="header"></ng-include>
+<div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
+<div ng-show="success" class="alert alert-success">{{successMessage}}</div>
+<div class="page-header">
+    <h1>{{logtype}} Logs
+        <small class="hidden-xs">&nbsp;— Recent 1,000 decks hits for {{logtype}}: <i>{{name}}</i></small>
+    </h1>
+</div>
+<div class="progress">
+    <div class="progress-bar progress-bar-success" style="width: 100%">100% success (854)</div>
+    <div class="progress-bar progress-bar-danger" style="width: 0%">0% failed (0)</div>
+</div>
+<table class="table table-condensed table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tweet</th>
+        <th>Account</th>
+        <th>Deck Name</th>
+        <th>Time</th>
+        <th>Ago</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="log in logs">
+        <td>{{$index +1}}</td>
+        <td><a href="http://twitter.com/{{log.keyword}}/status/{{log.retweetid}}/" target="_blank">{{log.retweetid}}</a>
+        </td>
+        <td>@<a href="http://twitter.com/{{log.keyword}}" target="_blank">{{log.keyword}}</a></td>
+        <td><span title="152">{{name}}</span></td>
+        <td>{{log.last_retweeted}}</td>
+        <td>
+            <time am-time-ago="log.last_retweeted"
+                  title="{{ log.last_retweeted | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}">
+            </time>
+        </td>
+        <td>
+            <span title="1/35"><font color="green">SUCCESS</font></span>
+        </td>
+    </tr>
+    </tbody>
+</table>

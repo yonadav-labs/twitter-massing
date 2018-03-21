@@ -1,0 +1,3 @@
+web: gunicorn project:app --timeout 600
+celery_beat: celery beat --app=project.tasks.celery --loglevel=info
+celery_worker: celery worker --app=project.tasks.celery --loglevel=info

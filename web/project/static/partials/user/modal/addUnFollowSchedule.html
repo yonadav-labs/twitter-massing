@@ -1,0 +1,72 @@
+<div class="dialog-title">
+    Add UnFollow schedule
+</div>
+<div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
+<div class="modal-body" id="modal-body">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-4" for="schedule_date">Start Date:</label>
+            <div class="col-md-6">
+                <p class="input-group">
+                    <input type="text" id="schedule_date" class="form-control" uib-datepicker-popup ng-model="startDate"
+                           is-open="opened" datepicker-options="dateOptions" ng-required="true" close-text="Close"
+                           required />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDatePicker()">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                    </span>
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4" for="schedule_from_time">UnFollow Time:</label>
+            <div class="col-sm-4">
+                <div class="input-group input-group-datetime">
+                    <input type="time" id="schedule_from_time" class="form-control" ng-model="starttime" required
+                           style="min-width:100% !important;">
+                    <span class="input-group-addon add-on">
+                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        </span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group input-group-datetime">
+                    <input type="time" id="schedule_to_time" class="form-control" ng-model="endtime" required
+                           style="min-width:100% !important;">
+                    <span class="input-group-addon add-on">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4" for="max_follows">UnFollowing Option:</label>
+            <div class="col-sm-6">
+                <label>
+                    <input type="radio" ng-model="option" value="0">
+                    followed back
+                </label>
+                <label>
+                    <input type="radio" ng-model="option" value="1">
+                    unfollow all
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4" for="max_follows">Max. UnFollows:</label>
+            <div class="col-sm-6">
+                <input type="text" id="max_follows" class="form-control placeholder-left text-left" ng-model="maxUnFollows"
+                       placeholder="Max. accounts to unfollow">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button data-bb-handler="Add" type="button" class="btn btn-md btn-success btn-add-schedule" ng-click="addUnFollowSchedule()">
+        Add Schedule
+    </button>
+    <button data-bb-handler="cancel" type="button" class="btn btn-md btn-danger" ng-click="cancel()">
+        Close
+    </button>
+</div>

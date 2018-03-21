@@ -1,0 +1,109 @@
+<ng-include src="'static/partials/header.html'"></ng-include>
+<h1 style="float: left; margin: 0;"> Welcome {{ user.name }}!</h1>
+<div class="search-box">
+    <span class="counter">
+        Users: {{filterData.length}}/{{users.length}}
+    </span>
+    <input type="search" id="filter-user" name="q" ng-model="searchUser"
+           class="form-control width-half " placeholder="Search users…"
+           autocomplete="off" aria-label="Search users…" data-hotkey="/" value="">
+</div>
+<div ng-show="error" class="alert alert-danger" style="float: left; width: 100%;">{{errorMessage}}</div>
+<div ng-show="success" class="alert alert-success" style="float: left;width: 100%;">{{successMessage}}</div>
+<div class="panel panel-default" style=" float: left; width: 100%;">
+
+    <div class="panel-heading" ng-click="adduser_toggle()">Add New (Click to View)</div>
+    <div class="panel-body add" ng-show="adduser_state" style="">
+        <div class="row">
+            <form class="form-signin" ng-submit="addUser()">
+                <div class="form-group">
+                    <label for="inputName" class="sr-only">Name</label>
+                    <input type="text" class="form-control" id="inputName" name="inputName" ng-model="registerForm.name"
+                           placeholder="Name" required="" autofocus="">
+                    <label for="password" class="sr-only">Password</label>
+                    <input type="password" class="form-control" id="password" name="password"
+                           ng-model="registerForm.password" placeholder="Password" required="">
+                    <input type="text" class="form-control" id="limit" name="limit"
+                           ng-model="registerForm.limit" placeholder="Account limit">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="disabled">Register
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<table class="table table-hover" style="border: 1px solid #ddd;">
+    <thead>
+    <td style="width:10%"><strong>Action</strong></td>
+    <td style="width:30%"><strong>Username</strong></td>
+    <td style="width:50%"><strong>Registered</strong></td>
+    <td style="width:10%"><strong>Account Limit</strong></td>
+    </thead>
+    <tbody>
+    <tr id="row"
+        ng-repeat="user in filterData = (users | filter : {username: searchUser}) | limitTo:pageSize:pageSize*(currentPage-1)">
+        <td id="icons" width="150">
+            <button type="button" class="del-btn btn btn-default btn-sm" ng-click="delUser(user.id)">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="del-btn btn btn-default btn-sm" ng-click="link_toggle($index)">
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td>
+            <span title="152">{{user.username}}</span>
+            <div class="show_deck" ng-show="user.show_deck">
+                <table class="table table-hover" style="border: 1px solid #ddd;">
+                    <thead>
+                    <td><strong>No</strong></td>
+                    <td><strong>Full Name</strong></td>
+                    <td><strong>Screen Name</strong></td>
+                    <td width="22%"><strong>Followers</strong></td>
+                    <td><strong>Followings</strong></td>
+                    <td><strong>Description</strong></td>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="account in user.accounts">
+                        <td>
+                            <span>{{$index+1}}</span>
+                        </td>
+                        <td>
+                            <span>{{account.fullname}}</span>
+                        </td>
+                        <td>
+                            <span>{{account.screenname}}</span>
+                        </td>
+                        <td>
+                            <span>{{account.followers | thousandSuffix}}</span>
+                        </td>
+                        <td>
+                            <span>{{account.followings | thousandSuffix}}</span>
+                        </td>
+                        <td>
+                            <span>{{account.description}}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+
+        <td>
+            <span title="152">{{user.registered_on}}</span>
+        </td>
+
+        <td>
+            <span title="152">{{user.account_limit}}</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div style="text-align:center;">
+    <uib-pagination total-items="filterData.length" style=" margin:5px;" ng-model="currentPage"
+                    items-per-page="itemsPerPage">
+    </uib-pagination>
+</div>
+</div>
+

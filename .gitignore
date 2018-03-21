@@ -1,0 +1,16 @@
+*.pyc
+*.db
+*.sqlite3
+*.db
+*.docx
+*.csv
+*.pid
+*.log
+runtime.txt
+env/
+nohup.out
+migrations
+static/media
+db_dump
+uploads
+config.py

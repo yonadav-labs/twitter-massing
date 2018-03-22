@@ -199,7 +199,6 @@ def uploadCSVList():
 
 @user_routes.route('/uploadList', methods=['POST'])
 def uploadList():
-    print '###############'
     result = {}
     json_data = request.json
     accountId = json_data['accountId']

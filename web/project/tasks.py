@@ -65,6 +65,7 @@ def auto_follow(twitter_connection, followings):
             Following.query.filter_by(id=following.id).update({'status': 1})
             last_followed = following.name
         except TwitterHTTPError as api_error:
+            print api_error, '@@@@@@@@@@@@@@'
             # quit on rate limit errors
             if "unable to follow more people at this time" in str(api_error).lower():
                 print("You are unable to follow more people at this time. "

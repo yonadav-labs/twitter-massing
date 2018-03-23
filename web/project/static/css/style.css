@@ -155,7 +155,7 @@ body {
 
 .flipswitch {
     position: relative;
-    width: 80px;
+    width: 70px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -197,7 +197,7 @@ label {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 51px;
+    right: 44px;
     -webkit-transition: 0.3s;
     -moz-transition: 0.3s;
     -ms-transition: 0.3s;

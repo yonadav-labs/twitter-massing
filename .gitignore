@@ -14,3 +14,4 @@ static/media
 db_dump
 uploads
 config.py
+celerybeat-schedule

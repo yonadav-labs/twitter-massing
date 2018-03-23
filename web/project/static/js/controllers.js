@@ -531,7 +531,7 @@ myApp
           ariaLabelledBy: 'modal-title-bottom',
           ariaDescribedBy: 'modal-body-bottom',
           templateUrl: '/static/partials/user/modal/addUploadList.html',
-          size: 'lg',
+          size: 'md',
           resolve: {
             accountId: function() {
               return $scope.accountId;
@@ -544,11 +544,19 @@ myApp
             $scope.followings_count = $scope.followers_count = $scope.likes_count = $scope.tweets_count = 0;
 
             $scope.findUser = function() {
+              if (!$scope.searchText ||  $scope.searchText.trim() == '') {
+                alert('Please provide screen name and other filters.');
+                angular.element('#searchText').val('');
+                $scope.linkedUsers = [];
+                angular.element('#searchText').focus();
+                return;
+              }
+
               followings_count = parseInt($scope.followings_count);
               followers_count = parseInt($scope.followers_count);
               likes_count = parseInt($scope.likes_count);
               tweets_count = parseInt($scope.tweets_count);
-              AuthService.getListUsersByName($scope.searchText, $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count)
+              AuthService.getListUsersByName($scope.searchText.trim(), $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count)
                 .then(function(result) {
                   $scope.linkedUsers = result.users;
                 })
@@ -556,7 +564,6 @@ myApp
                 .catch(function(result) {
                   console.log(result);
                 });
-
             }
 
             $scope.uploadCSVList = function() {
@@ -576,6 +583,18 @@ myApp
                 });
             }
             $scope.uploadList = function() {
+              if (!$scope.listname ||  $scope.listname.trim() == '') {
+                alert('Please provide list name.');
+                angular.element('#pool_list_name').val('');
+                angular.element('#pool_list_name').focus();
+                return;
+              }
+
+              if (!$scope.users) {
+                alert('Please choose users.');
+                return;
+              }
+
               AuthService.uploadList(accountId, $scope.listname, $scope.users)
                 .then(function(result) {
                   var rs = {};

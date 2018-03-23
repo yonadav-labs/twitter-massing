@@ -1,74 +1,87 @@
 <div class="dialog-title">
-  Add list
+  Add List
 </div>
 <div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
   <div class="modal-body" id="modal-body">
+    <div class="row"><div class="col-md-offset-1 col-md-10 m-t-15">
     <div class="form-horizontal">
+      <h3>Filters</h3>
       <form class="form-horizontal" ng-submit="findUser()">
         <div class="form-group">
-          <label class="col-sm-3">Username</label>
-          <div class="col-sm-4">
-            <div class="input-group">
-              <input type="text" ng-model="searchText" placeholder="Screen Name" class="form-control">
-            </div>
+          <label class="col-sm-4">Username</label>
+          <div class="col-sm-5">
+            <input type="text" ng-model="searchText" id="searchText" placeholder="Screen Name" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-4" for="followings_count">Following Count:</label>
+          <div class="col-sm-5">
+            <input type="number" id="followings_count" name="followings_count" class="form-control"
+                 ng-model="followings_count" min="0"
+                 placeholder="followings_count" maxlength="15" autocomplete="off" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4" for="followers_count">Followers Count:</label>
+          <div class="col-sm-5">
+            <input type="number" id="followers_count" name="followers_count" class="form-control"
+                 ng-model="followers_count" min="0"
+                 placeholder="followers_count" maxlength="15" autocomplete="off" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4" for="likes_count">Likes Count:</label>
+          <div class="col-sm-5">
+            <input type="number" id="likes_count" name="likes_count" class="form-control"
+                 ng-model="likes_count" min="0"
+                 placeholder="likes_count" maxlength="15" autocomplete="off" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-4" for="tweets_count">Tweets Count:</label>
+          <div class="col-sm-5">
+            <input type="number" id="tweets_count" name="tweets_count" class="form-control"
+                 ng-model="tweets_count" min="0"
+                 placeholder="tweets_count" maxlength="15" autocomplete="off" required>
           </div>
           <div class="col-sm-2">
             <button data-bb-handler="Filter" type="button" class="btn btn-md btn-success btn-filter" ng-click="findUser()">
               Filter
             </button>
+          </div>        
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-4">
+            <label class="col-sm-4 text-success" id="num_result" ng-show="linkedUsers.length > 0">{{ linkedUsers.length }} results</label>
           </div>
         </div>
+        <hr>
       </form>
+      <h3>Pool</h3>
       <div class="form-group">
-        <label class="col-sm-3" for="pool_list_name">List Name:</label>
-        <div class="col-sm-4">
+        <label class="col-sm-4" for="pool_list_name">List Name:</label>
+        <div class="col-sm-5">
           <input type="text" id="pool_list_name" name="pool_list_name" class="form-control"
                ng-model="listname"
                placeholder="List Name" maxlength="15" autocomplete="off" required>
         </div>
       </div>
-
       <div class="form-group">
-        <label class="col-sm-3" for="followings_count">Following Count:</label>
-        <div class="col-sm-4">
-          <input type="text" id="followings_count" name="followings_count" class="form-control"
-               ng-model="followings_count"
-               placeholder="followings_count" maxlength="15" autocomplete="off" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3" for="followers_count">Followers Count:</label>
-        <div class="col-sm-4">
-          <input type="text" id="followers_count" name="followers_count" class="form-control"
-               ng-model="followers_count"
-               placeholder="followers_count" maxlength="15" autocomplete="off" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3" for="likes_count">Likes Count:</label>
-        <div class="col-sm-4">
-          <input type="text" id="likes_count" name="likes_count" class="form-control"
-               ng-model="likes_count"
-               placeholder="likes_count" maxlength="15" autocomplete="off" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3" for="tweets_count">Tweets Count:</label>
-        <div class="col-sm-4">
-          <input type="text" id="tweets_count" name="tweets_count" class="form-control"
-               ng-model="tweets_count"
-               placeholder="tweets_count" maxlength="15" autocomplete="off" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3">List Users</label>
-        <div class="col-sm-4">
+        <label class="col-sm-4">List Users</label>
+        <div class="col-sm-5">
           <select name="users" class="form-control" ng-model="users" required=""
                 ng-options="user.screen_name for user in linkedUsers" multiple="">
           </select>
         </div>
       </div>
+      <div class="form-group">
+        <div class="col-sm-offset-4">
+          <label class="col-sm-4 text-primary" id="num_selected" ng-show="linkedUsers.length > 0">{{ users && users.length || '0' }} selected</label>
+        </div>
+      </div>      
     </div>
+    </div></div>
   </div>
   <div class="modal-footer">
     <button data-bb-handler="Add" type="button" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">

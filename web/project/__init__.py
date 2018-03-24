@@ -41,8 +41,6 @@ twitter_connection = Twitter(auth=OAuth(
     app.config["CONSUMER_SECRET"])
 )
 
-
-
 celery = create_celery_app(app,db)
 
 

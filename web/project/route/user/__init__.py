@@ -6,9 +6,17 @@ import datetime
 
 from .account import *
 from .profile import *
+
 from project import twitter_connection
 from twitter import Twitter, OAuth, TwitterHTTPError
+from flask import session
 
+@user_routes.route('/stopFetching', methods=['POST'])
+def stopFetching():
+    print session, '########### 2'
+    session['fetching'] = False
+    print session, '########### 3'
+    return jsonify({'result': 'success'})
 
 @user_routes.route('/findUsers', methods=['POST'])
 def findUsers():
@@ -17,9 +25,13 @@ def findUsers():
     cursor = -1
     users = []
     loop_threshold = 26 # max 127.4k
-    
+    # set fetching flag
+    fetching = True
+    print session, '########### 0'
+    session['fetching'] = fetching
+    print session, '########### 1'
     try:
-        while cursor != 0 and loop_threshold > 0:
+        while cursor != 0 and loop_threshold > 0 and fetching:
             start_time = datetime.datetime.now()
             results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
             cursor = results['next_cursor']
@@ -27,6 +39,12 @@ def findUsers():
             current_app.logger.info(str(len(results['ids'])))
 
             for n in range(0, len(results["ids"]), 100):
+                # check status of fetching
+                fetching = session.get('fetching')
+                print session, '@@@@@@@@@@@@@@@@@'
+                if not fetching:
+                    break
+
                 ids = results["ids"][n:n + 100]
                 subquery = twitter_connection.users.lookup(user_id=ids)
                 for user in subquery:
@@ -59,5 +77,7 @@ def findUsers():
         print api_error, '@@@@@@@@@@@@@@'
         #'rate limit exceeded'
 
+    # reset fetching flag
+    # session['fetching'] = False    
     result['users'] = users
     return jsonify({'result': result})

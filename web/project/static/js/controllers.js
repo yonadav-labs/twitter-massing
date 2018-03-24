@@ -545,7 +545,13 @@ myApp
             };
 
             $scope.stopFetching = function() {
-              $scope.fetching = false;
+              AuthService.stopFetching()
+              .then(function(result) {
+                $scope.fetching = false;
+              })
+              .catch(function(result) {
+                console.log(result);
+              });
             }
 
             $scope.followings_count = $scope.followers_count = $scope.likes_count = $scope.tweets_count = 0;

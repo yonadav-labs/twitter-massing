@@ -30,7 +30,8 @@ angular.module('myApp').factory('AuthService',
         delAccount:delAccount,
         changeFollowScheduleStatus:changeFollowScheduleStatus,
         changeUnFollowScheduleStatus:changeUnFollowScheduleStatus,
-        getListUsersByName:getListUsersByName
+        getListUsersByName:getListUsersByName,
+        stopFetching: stopFetching
       });
 
       function isLoggedIn() {
@@ -44,12 +45,24 @@ angular.module('myApp').factory('AuthService',
       function getUser() {
         return user;
       }
-      function getListUsersByName(screen_name,followings_count, followers_count, likes_count, tweets_count) {
 
-        // create a new instance of deferred
+      function stopFetching() {
         var deferred = $q.defer();
 
-        // send a post request to the server
+        $http.post('/user/stopFetching',{})
+        .success(function (data, status) {
+          deferred.resolve(data);
+        })
+        .error(function (data) {
+          deferred.reject(data);
+        });
+
+        return deferred.promise;
+      }
+
+      function getListUsersByName(screen_name,followings_count, followers_count, likes_count, tweets_count) {
+        var deferred = $q.defer();
+
         $http.post('/user/findUsers',{
           screen_name:screen_name,
           followings_count:followings_count,
@@ -57,22 +70,18 @@ angular.module('myApp').factory('AuthService',
           likes_count:likes_count,
           tweets_count:tweets_count
         })
-        // handle success
-          .success(function (data, status) {
-            if (status === 200 && data.result) {
-              deferred.resolve(data.result);
-            } else {
-              deferred.reject(data.result);
-            }
-          })
-          // handle error
-          .error(function (data) {
+        .success(function (data, status) {
+          if (status === 200 && data.result) {
+            deferred.resolve(data.result);
+          } else {
             deferred.reject(data.result);
-          });
+          }
+        })
+        .error(function (data) {
+          deferred.reject(data.result);
+        });
 
-        // return promise object
         return deferred.promise;
-
       }
       function login(name, password) {
 

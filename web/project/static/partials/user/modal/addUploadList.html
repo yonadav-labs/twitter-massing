@@ -5,7 +5,7 @@
   <div class="modal-body" id="modal-body">
     <div class="row"><div class="col-md-6">
       <h3 class="col-sm-offset-1">Filters</h3>
-      <form class="form-horizontal" ng-submit="findUser()">
+      <form class="form-horizontal">
         <div class="form-group">
           <label class="col-sm-offset-1 col-sm-4">Username</label>
           <div class="col-sm-6">
@@ -47,23 +47,23 @@
         </div>
         <div class="form-group">
           <div class="col-sm-offset-5 col-sm-6">
-            <button data-bb-handler="Filter" type="button" class="btn btn-md btn-success btn-filter" ng-click="findUser()">&nbsp;&nbsp;
-              Filter&nbsp;&nbsp;
+            <button data-bb-handler="Filter" ng-disabled="fetching" class="btn btn-md btn-success btn-filter" ng-click="findUser()">&nbsp;
+              Filter&nbsp;
             </button>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-show="fetching">
           <div class="col-sm-offset-2">
             <div class="col-sm-9">
               <div class="spinner"></div>
-              <span class="fetchig-user">fetching users: <b>120</b></span>
-              <button class="btn btn-sm btn-danger pull-right">Stop</button>
+              <span class="fetchig-user">Fetching users: <b>120</b></span>
+              <button class="btn btn-sm btn-danger pull-right" ng-click="stopFetching()">Stop</button>
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <div class="col-sm-offset-4">
-            <label class="col-sm-8 text-success" id="num_result" ng-show="linkedUsers.length > 0">{{ linkedUsers.length | number }} results</label>
+        <div class="form-group" ng-show="!fetching && linkedUsers.length > 0">
+          <div class="col-sm-offset-5">
+            <label class="col-sm-8 text-success" id="num_result">Fetched <b>{{ linkedUsers.length | number }}</b> users</label>
           </div>
         </div>
       </form>
@@ -94,7 +94,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-8">
-          <button data-bb-handler="Add" ng-disabled="!(linkedUsers && linkedUsers.length > 0)" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
+          <button data-bb-handler="Add" ng-disabled="!(users && users.length > 0)" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
             Upload
           </button>
           <button data-bb-handler="cancel" class="btn btn-md btn-danger" ng-click="cancel()">

@@ -539,9 +539,15 @@ myApp
             }
           },
           controller: function($scope, $uibModalInstance, AuthService, accountId) {
+            $scope.fetching = false;
             $scope.cancel = function() {
               $uibModalInstance.dismiss('cancel');
             };
+
+            $scope.stopFetching = function() {
+              $scope.fetching = false;
+            }
+
             $scope.followings_count = $scope.followers_count = $scope.likes_count = $scope.tweets_count = 0;
 
             $scope.findUser = function() {
@@ -552,6 +558,7 @@ myApp
                 angular.element('#searchText').focus();
                 return;
               }
+              $scope.fetching = true;
 
               followings_count = parseInt($scope.followings_count);
               followers_count = parseInt($scope.followers_count);
@@ -560,6 +567,7 @@ myApp
               AuthService.getListUsersByName($scope.searchText.trim(), $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count)
                 .then(function(result) {
                   $scope.linkedUsers = result.users;
+                  $scope.fetching = false;
                 })
                 // handle error
                 .catch(function(result) {

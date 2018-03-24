@@ -21,7 +21,6 @@ def findUsers():
     try:
         while cursor != 0 and loop_threshold > 0:
             start_time = datetime.datetime.now()
-            print start_time, '==================='
             results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
             cursor = results['next_cursor']
             loop_threshold = loop_threshold -1
@@ -52,7 +51,8 @@ def findUsers():
 
             # mechanism for avoiding rate limit for ids
             elapsed = (datetime.datetime.now() - start_time).seconds
-            if elapsed < 61:
+            if elapsed < 61 and cursor:
+                print cursor, 61-elapsed, '############'
                 time.sleep(61-elapsed)
 
     except TwitterHTTPError as api_error:

@@ -1,6 +1,8 @@
 from flask import Blueprint, current_app
 user_routes = Blueprint('user_routes', __name__, url_prefix='/user')
 
+import datetime
+
 from .account import *
 from .profile import *
 from project import twitter_connection
@@ -15,15 +17,16 @@ def findUsers():
     users = []
     loop_threshold = 10
 
-    while cursor != 0 and loop_threshold > 0:
-        results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
-        cursor = results['next_cursor']
-        loop_threshold = loop_threshold -1
+    try:
+        while cursor != 0 and loop_threshold > 0:
 
-        current_app.logger.info(str(len(results['ids'])))
+            results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
+            cursor = results['next_cursor']
+            loop_threshold = loop_threshold -1
+            print datetime.datetime.now()
+            current_app.logger.info(str(len(results['ids'])))
 
-        for n in range(0, len(results["ids"]), 100):
-            try:
+            for n in range(0, len(results["ids"]), 100):
                 ids = results["ids"][n:n + 100]
                 subquery = twitter_connection.users.lookup(user_id=ids)
                 for user in subquery:
@@ -45,8 +48,9 @@ def findUsers():
 
                         users.append(tmpuser)
                 print len(users), '$#$#$#$#$#$#$#$#'
-            except TwitterHTTPError as api_error:
-                print api_error, '@@@@@@@@@@@@@@'
+    except TwitterHTTPError as api_error:
+        print api_error, '@@@@@@@@@@@@@@'
+        #'rate limit exceeded'
 
     result['users'] = users
     return jsonify({'result': result})

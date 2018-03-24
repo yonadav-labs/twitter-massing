@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app
 user_routes = Blueprint('user_routes', __name__, url_prefix='/user')
 
+import time
 import datetime
 
 from .account import *
@@ -15,15 +16,15 @@ def findUsers():
     json_data = request.json
     cursor = -1
     users = []
-    loop_threshold = 10
-
+    loop_threshold = 25 # max 125k
+    
     try:
         while cursor != 0 and loop_threshold > 0:
-
+            start_time = datetime.datetime.now()
+            print start_time, '==================='
             results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
             cursor = results['next_cursor']
             loop_threshold = loop_threshold -1
-            print datetime.datetime.now()
             current_app.logger.info(str(len(results['ids'])))
 
             for n in range(0, len(results["ids"]), 100):
@@ -48,6 +49,12 @@ def findUsers():
 
                         users.append(tmpuser)
                 print len(users), '$#$#$#$#$#$#$#$#'
+
+            # mechanism for avoiding rate limit for ids
+            elapsed = (datetime.datetime.now() - start_time).seconds
+            if elapsed < 61:
+                time.sleep(61-elapsed)
+
     except TwitterHTTPError as api_error:
         print api_error, '@@@@@@@@@@@@@@'
         #'rate limit exceeded'

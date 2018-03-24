@@ -16,7 +16,7 @@ def findUsers():
     json_data = request.json
     cursor = -1
     users = []
-    loop_threshold = 25 # max 125k
+    loop_threshold = 26 # max 127.4k
     
     try:
         while cursor != 0 and loop_threshold > 0:

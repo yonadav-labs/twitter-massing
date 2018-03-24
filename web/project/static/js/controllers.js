@@ -531,7 +531,8 @@ myApp
           ariaLabelledBy: 'modal-title-bottom',
           ariaDescribedBy: 'modal-body-bottom',
           templateUrl: '/static/partials/user/modal/addUploadList.html',
-          size: 'md',
+          size: 'lg',
+          backdrop: 'static',
           resolve: {
             accountId: function() {
               return $scope.accountId;

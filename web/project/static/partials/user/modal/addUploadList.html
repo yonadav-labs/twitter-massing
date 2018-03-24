@@ -3,91 +3,106 @@
 </div>
 <div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
   <div class="modal-body" id="modal-body">
-    <div class="row"><div class="col-md-offset-1 col-md-10 m-t-15">
-    <div class="form-horizontal">
-      <h3>Filters</h3>
+    <div class="row"><div class="col-md-6">
+      <h3 class="col-sm-offset-1">Filters</h3>
       <form class="form-horizontal" ng-submit="findUser()">
         <div class="form-group">
-          <label class="col-sm-4">Username</label>
-          <div class="col-sm-5">
+          <label class="col-sm-offset-1 col-sm-4">Username</label>
+          <div class="col-sm-6">
             <input type="text" ng-model="searchText" id="searchText" placeholder="Screen Name" class="form-control">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-4" for="followings_count">Following Count:</label>
-          <div class="col-sm-5">
+          <label class="col-sm-offset-1 col-sm-4" for="followings_count">Following Count:</label>
+          <div class="col-sm-6">
             <input type="number" id="followings_count" name="followings_count" class="form-control"
                  ng-model="followings_count" min="0"
                  placeholder="followings_count" maxlength="15" autocomplete="off" required>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4" for="followers_count">Followers Count:</label>
-          <div class="col-sm-5">
+          <label class="col-sm-offset-1 col-sm-4" for="followers_count">Followers Count:</label>
+          <div class="col-sm-6">
             <input type="number" id="followers_count" name="followers_count" class="form-control"
                  ng-model="followers_count" min="0"
                  placeholder="followers_count" maxlength="15" autocomplete="off" required>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4" for="likes_count">Likes Count:</label>
-          <div class="col-sm-5">
+          <label class="col-sm-offset-1 col-sm-4" for="likes_count">Likes Count:</label>
+          <div class="col-sm-6">
             <input type="number" id="likes_count" name="likes_count" class="form-control"
                  ng-model="likes_count" min="0"
                  placeholder="likes_count" maxlength="15" autocomplete="off" required>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-sm-4" for="tweets_count">Tweets Count:</label>
-          <div class="col-sm-5">
+          <label class="col-sm-offset-1 col-sm-4" for="tweets_count">Tweets Count:</label>
+          <div class="col-sm-6">
             <input type="number" id="tweets_count" name="tweets_count" class="form-control"
                  ng-model="tweets_count" min="0"
                  placeholder="tweets_count" maxlength="15" autocomplete="off" required>
           </div>
-          <div class="col-sm-2">
-            <button data-bb-handler="Filter" type="button" class="btn btn-md btn-success btn-filter" ng-click="findUser()">
-              Filter
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-5 col-sm-6">
+            <button data-bb-handler="Filter" type="button" class="btn btn-md btn-success btn-filter" ng-click="findUser()">&nbsp;&nbsp;
+              Filter&nbsp;&nbsp;
             </button>
-          </div>        
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2">
+            <div class="col-sm-9">
+              <div class="spinner"></div>
+              <span class="fetchig-user">fetching users: <b>120</b></span>
+              <button class="btn btn-sm btn-danger pull-right">Stop</button>
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <div class="col-sm-offset-4">
             <label class="col-sm-8 text-success" id="num_result" ng-show="linkedUsers.length > 0">{{ linkedUsers.length | number }} results</label>
           </div>
         </div>
-        <hr>
       </form>
+    </div>
+    <div class="col-md-6">
+      <div class="form-horizontal">
       <h3>Pool</h3>
       <div class="form-group">
-        <label class="col-sm-4" for="pool_list_name">List Name:</label>
-        <div class="col-sm-5">
+        <label class="col-sm-3" for="pool_list_name">List Name:</label>
+        <div class="col-sm-6">
           <input type="text" id="pool_list_name" name="pool_list_name" class="form-control"
                ng-model="listname"
                placeholder="List Name" maxlength="15" autocomplete="off" required>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-sm-4">List Users</label>
-        <div class="col-sm-5">
-          <select name="users" class="form-control" ng-model="users" required=""
+        <label class="col-sm-3">List Users</label>
+        <div class="col-sm-6">
+          <select name="users" class="form-control" ng-model="users" size="8" 
                 ng-options="user.screen_name for user in linkedUsers" multiple="">
           </select>
         </div>
       </div>
-      <div class="form-group">
-        <div class="col-sm-offset-4">
+      <div class="form-group" style="margin-bottom: 10px; height: 20px;">
+        <div class="col-sm-offset-3">
           <label class="col-sm-8 text-danger" id="num_selected" ng-show="linkedUsers.length > 0">{{ (users && users.length || 0) | number }} selected <a href="javascript:void(0);" ng-click="users=linkedUsers">( Select All )</a></label>
         </div>
-      </div>      
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-8">
+          <button data-bb-handler="Add" ng-disabled="!(linkedUsers && linkedUsers.length > 0)" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
+            Upload
+          </button>
+          <button data-bb-handler="cancel" class="btn btn-md btn-danger" ng-click="cancel()">
+            Cancel
+          </button>          
+        </div>
+      </div>
     </div>
-    </div></div>
+    </div>
   </div>
-  <div class="modal-footer">
-    <button data-bb-handler="Add" type="button" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
-      Upload
-    </button>
-    <button data-bb-handler="cancel" type="button" class="btn btn-md btn-danger" ng-click="cancel()">
-      Cancel
-    </button>
-  </div>
+</div>

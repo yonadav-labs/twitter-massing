@@ -174,6 +174,8 @@ myApp
     function($scope, $routeParams, $location, AuthService, $uibModal, $log) {
 
       $scope.state = false;
+      $scope.fetching = false;
+
       $scope.toggle = function() {
         $scope.state = !$scope.state;
       };
@@ -217,6 +219,13 @@ myApp
         AuthService.getLists($scope.accountId)
           .then(function(result) {
             $scope.lists = result.lists;
+
+            angular.forEach(result.lists, function(list, key) {
+              if (list.type == 'Fetching' && !list.complete_status) {
+                $scope.fetching = true;
+              }
+            })
+            console.log($scope.fetching);
           })
           .catch(function(result) {
             $scope.error = true;

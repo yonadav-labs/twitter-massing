@@ -131,7 +131,7 @@
   <div class="panel-heading">
     Follows Lists
     <div class="pull-right" style="margin-top:-5px;">
-      <button class="btn btn-sm btn-success" id="upload_follows_list" ng-click="openUploadList()">
+      <button class="btn btn-sm btn-success" id="upload_follows_list" ng-click="openUploadList()" ng-disabled="fetching">
         <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
         Upload List
       </button>
@@ -181,8 +181,12 @@
             <span ng-if="list.complete_status" class="text-success glyphicon glyphicon-ok" aria-hidden="true"></span>
           </td>
           <td class="text-center">
+            <a ng-click="delList(list.id)" title="Upload this List"
+               class="btn-delete" style="margin-right: 7px; font-size: 15px;">              
+              <span class="glyphicon glyphicon-upload" aria-hidden="true" ng-if="list.type=='Fetching' && list.complete_status"></span>
+            </a>
             <a ng-click="delList(list.id)" title="Delete this List"
-               class="btn-delete">
+               class="btn-delete">              
               <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </a>
           </td>

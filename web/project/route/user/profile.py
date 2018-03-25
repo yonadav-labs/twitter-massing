@@ -140,7 +140,7 @@ def getLists():
     result = {}
     json_data = request.json
     show_keys = ['id', 'account_id', 'added_on', 'listname', 'started_on', 'progress', 'last_followed',
-                 'complete_status', 'total_count']
+                 'complete_status', 'total_count', 'type']
     pools = Pool.query.filter_by(accountid=json_data['accountId']).all()
     result['status'] = 1
     result['lists'] = [pool.to_dict(show=show_keys) for pool in pools]

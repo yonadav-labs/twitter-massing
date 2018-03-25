@@ -717,15 +717,6 @@ myApp
       return rounded;
     };
   })
-  .filter('getType', function() {
-    return function(input) {
-      if (input.last_followed.indexOf(',') > 0) {
-        return 'Fetching';
-      } else {
-        return 'Uploading';
-      }
-    };
-  })
   .directive('fileModel', ['$parse', function($parse) {
     return {
       restrict: 'A',

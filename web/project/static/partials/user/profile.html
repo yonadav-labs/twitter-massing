@@ -159,9 +159,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="follow-list-row" ng-class="list|getType" ng-repeat="list in lists">
-          <td class="list-name">{{list.listname}}</td>
-          <td class="list-type">{{ list|getType }}</td>
+        <tr class="follow-list-row" ng-class="list.type" ng-repeat="list in lists">
+          <td class="list-name">{{ list.listname }}</td>
+          <td class="list-type">{{ list.type }}</td>
           <td class="follow-added-on">{{list.added_on | getDate}} {{list.added_on | getTime}}</td>
           <td class="follow-started-on">{{list.started_on | getDate}} {{list.started_on | getTime}}</td>
           <td>
@@ -176,7 +176,7 @@
               </span>
             </div>
           </td>
-          <td class="last-followed">{{ list.last_followed.indexOf(',') > 0 ? '': list.last_followed }}</td>
+          <td class="last-followed">{{ list.type == 'Fetching' ? '': list.last_followed }}</td>
           <td class="text-center">
             <span ng-if="list.complete_status" class="text-success glyphicon glyphicon-ok" aria-hidden="true"></span>
           </td>

@@ -8,29 +8,48 @@ from .account import *
 from .profile import *
 
 from project import twitter_connection
+from project import db
+from project.models import Following, Pool
+
 from twitter import Twitter, OAuth, TwitterHTTPError
 from flask import session
 
 @user_routes.route('/stopFetching', methods=['POST'])
 def stopFetching():
-    print session, '########### 2'
+    # print session, '########### 2'
     session['fetching'] = False
-    print session, '########### 3'
+    # print session, '########### 3'
     return jsonify({'result': 'success'})
 
 @user_routes.route('/findUsers', methods=['POST'])
 def findUsers():
     result = {}
     json_data = request.json
+
     cursor = -1
     users = []
     loop_threshold = 26 # max 127.4k
     # set fetching flag
     fetching = True
-    print session, '########### 0'
+    # print session, '########### 0'
     session['fetching'] = fetching
-    print session, '########### 1'
+    # print session, '########### 1'
+    last_followed = '{},{},{},{}'.format(json_data['followings_count'], 
+                                         json_data['followers_count'], 
+                                         json_data['likes_count'], 
+                                         json_data['tweets_count'])
+
     try:
+        target = twitter_connection.users.lookup(screen_name=json_data["screen_name"])
+        pool = Pool(accountid=json_data['accountId'], 
+                    listname=json_data["screen_name"],
+                    last_followed=last_followed,
+                    started_on=datetime.datetime.now(),
+                    type='Fetching',
+                    total_count=min(target[0]['friends_count'], 125000))
+        db.session.add(pool)
+        db.session.commit()
+
         while cursor != 0 and loop_threshold > 0 and fetching:
             start_time = datetime.datetime.now()
             results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
@@ -41,13 +60,16 @@ def findUsers():
             for n in range(0, len(results["ids"]), 100):
                 # check status of fetching
                 fetching = session.get('fetching')
-                print session, '@@@@@@@@@@@@@@@@@'
+                # print session, '@@@@@@@@@@@@@@@@@'
                 if not fetching:
                     break
 
                 ids = results["ids"][n:n + 100]
                 subquery = twitter_connection.users.lookup(user_id=ids)
                 for user in subquery:
+                    # check threshold
+                    if len(users) == 125000:
+                        break
 
                     followings = user['friends_count']
                     followers = user['followers_count']
@@ -65,18 +87,25 @@ def findUsers():
                         tmpuser['location'] = user['location']
 
                         users.append(tmpuser)
+                        # store in db
+                        follow = Following(poolid=pool.id, name=user['screen_name'], status=-2)
+                        db.session.add(follow)
+
+                Pool.query.filter_by(id=pool.id).update({'progress': len(users)})
+                db.session.commit()
                 print len(users), '$#$#$#$#$#$#$#$#'
 
             # mechanism for avoiding rate limit for ids
             elapsed = (datetime.datetime.now() - start_time).seconds
             if elapsed < 61 and cursor:
-                print cursor, 61-elapsed, '############'
                 time.sleep(61-elapsed)
 
     except TwitterHTTPError as api_error:
         print api_error, '@@@@@@@@@@@@@@'
         #'rate limit exceeded'
 
+    Pool.query.filter_by(id=pool.id).update({'complete_status': True})
+    db.session.commit()
     # reset fetching flag
     # session['fetching'] = False    
     result['users'] = users

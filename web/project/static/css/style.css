@@ -283,3 +283,11 @@ label {
     position: absolute;
     margin: 4px 8px;
 }
+
+tr.Uploading {
+    background-color: #FDF5E6;
+}
+
+.btn-delete {
+    color: black;
+}

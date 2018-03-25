@@ -199,15 +199,20 @@ class Pool(Base):
     listname = db.Column(db.String(255), nullable=False)
     started_on = db.Column(db.DateTime)
     progress = db.Column(db.Integer, nullable=False, default=0)
+    type = db.Column(db.String(50), default="Uploading")
     last_followed = db.Column(db.String(255))
     complete_status = db.Column(db.Boolean, nullable=False, default=False)
     total_count = db.Column(db.Integer, nullable=False, default=0)
     account = relationship("Account")
 
-    def __init__(self, accountid, listname):
+    def __init__(self, accountid, listname, type='Uploading', last_followed=None, total_count=0, started_on=None):
         self.accountid = accountid
         self.added_on = datetime.datetime.now()
         self.listname = listname
+        self.last_followed = last_followed
+        self.total_count = total_count
+        self.started_on = started_on
+        self.type = type
 
     def get_id(self):
         return self.id
@@ -225,9 +230,10 @@ class Following(Base):
     pool = relationship("Pool")
     status = db.Column(db.Integer, nullable=False, default=-1)
 
-    def __init__(self, poolid, name):
+    def __init__(self, poolid, name, status=-1):
         self.poolid = poolid
         self.name = name
+        self.status = status
 
     def get_id(self):
         return self.id

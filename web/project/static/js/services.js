@@ -60,7 +60,7 @@ angular.module('myApp').factory('AuthService',
         return deferred.promise;
       }
 
-      function getListUsersByName(screen_name,followings_count, followers_count, likes_count, tweets_count) {
+      function getListUsersByName(screen_name,followings_count, followers_count, likes_count, tweets_count, accountId) {
         var deferred = $q.defer();
 
         $http.post('/user/findUsers',{
@@ -68,7 +68,8 @@ angular.module('myApp').factory('AuthService',
           followings_count:followings_count,
           followers_count:followers_count,
           likes_count:likes_count,
-          tweets_count:tweets_count
+          tweets_count:tweets_count,
+          accountId: accountId
         })
         .success(function (data, status) {
           if (status === 200 && data.result) {

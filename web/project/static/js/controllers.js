@@ -565,12 +565,14 @@ myApp
                 return;
               }
               $scope.fetching = true;
+              $scope.linkedUsers = [];
+              $scope.users = [];
 
               followings_count = parseInt($scope.followings_count);
               followers_count = parseInt($scope.followers_count);
               likes_count = parseInt($scope.likes_count);
               tweets_count = parseInt($scope.tweets_count);
-              AuthService.getListUsersByName($scope.searchText.trim(), $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count)
+              AuthService.getListUsersByName($scope.searchText.trim(), $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count, accountId)
                 .then(function(result) {
                   $scope.linkedUsers = result.users;
                   $scope.fetching = false;
@@ -713,6 +715,15 @@ myApp
 
       rounded = (input / Math.pow(1000, exp)) + suffixes[exp - 1];
       return rounded;
+    };
+  })
+  .filter('getType', function() {
+    return function(input) {
+      if (input.last_followed.indexOf(',') > 0) {
+        return 'Fetching';
+      } else {
+        return 'Uploading';
+      }
     };
   })
   .directive('fileModel', ['$parse', function($parse) {

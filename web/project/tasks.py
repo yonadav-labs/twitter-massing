@@ -65,7 +65,7 @@ def auto_follow(twitter_connection, followings):
             Following.query.filter_by(id=following.id).update({'status': 1})
             last_followed = following.name
         except TwitterHTTPError as api_error:
-            print api_error, '@@@@@@@@@@@@@@'
+            print '@@@@', api_error, '@@@@@@@@@@@@@@'
             # quit on rate limit errors
             if "unable to follow more people at this time" in str(api_error).lower():
                 print("You are unable to follow more people at this time. "
@@ -73,7 +73,7 @@ def auto_follow(twitter_connection, followings):
                       "more followers.")
                 return last_followed
             # don't print "already requested to follow" errors - they're frequent
-            if "already requested to follow" in str(api_error).lower():
+            if "already requested to follow" in str(api_error).lower() or 'user must be age screened to perform this action' in str(api_error).lower():
                 Following.query.filter_by(id=following.id).update({'status': 1})
                 last_followed = following.name
                 print 'already followed user %s' % following.name
@@ -176,7 +176,7 @@ def configure_workers(sender, **kwargs):
                 # day_of_week = ', '.join(str(s) for s in set(range(0, 6)) - set([app.config['UNFOLLOWING_PERIOD_WEEK']]))
                 sender.add_periodic_task(
                             # crontab(minute=minute, hour='*', day_of_week='*'),
-                            87.0,
+                            61.0,
                             follow_task.s(accountId=account.id, max_follows=1), name=name
                         )
 

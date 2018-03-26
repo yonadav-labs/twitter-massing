@@ -170,9 +170,7 @@ myApp
       };
     }
   ])
-  .controller('profileController', ['$scope', '$routeParams', '$location', 'AuthService', '$uibModal', '$log',
-    function($scope, $routeParams, $location, AuthService, $uibModal, $log) {
-
+  .controller('profileController', function($scope, $routeParams, $location, AuthService, $uibModal, $log, $route) {
       $scope.state = false;
       $scope.fetching = false;
 
@@ -649,10 +647,11 @@ myApp
           }
         }, function() {
           $log.info('modal-component dismissed at: ' + new Date());
+          $route.reload();
         });
       };
     }
-  ])
+  )
   .controller('accountController', ['$scope', '$routeParams', '$location', 'AuthService',
     function($scope, $routeParams, $location, AuthService) {
 

@@ -163,7 +163,8 @@
           <td class="list-name">{{ list.listname }}</td>
           <td class="list-type">{{ list.type }}</td>
           <td class="follow-added-on">{{list.added_on | getDate}} {{list.added_on | getTime}}</td>
-          <td class="follow-started-on">{{list.started_on | getDate}} {{list.started_on | getTime}}</td>
+          <td class="follow-started-on" ng-if="list.started_on">{{ list.started_on | getDate}} {{list.started_on | getTime}}</td>
+          <td class="follow-started-on" ng-if="!list.started_on">Not started yet</td>
           <td>
             <div class="progress ">
               <div style="width: {{Math.round(100*list.progress/list.total_count)}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="30"

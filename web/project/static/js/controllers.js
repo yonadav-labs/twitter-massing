@@ -552,8 +552,12 @@ myApp
             if (fetchedId) {
               AuthService.getFetchList(fetchedId)
                 .then(function(result) {
+                  $scope.searchText = result.screen_name;
+                  $scope.followings_count = result.followings_count;
+                  $scope.followers_count = result.followers_count;
+                  $scope.likes_count = result.likes_count;
+                  $scope.tweets_count = result.tweets_count;
                   $scope.linkedUsers = result.users;
-                  $scope.fetching = false;
                 })
                 .catch(function(result) {
                   console.log(result);

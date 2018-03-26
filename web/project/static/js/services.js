@@ -68,7 +68,7 @@ angular.module('myApp').factory('AuthService',
           id: fetchListId
         })
         .success(function (data, status) {
-          deferred.resolve(data);
+          deferred.resolve(data.result);
         })
         .error(function (data) {
           deferred.reject(data);

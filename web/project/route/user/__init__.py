@@ -28,10 +28,10 @@ def getFetchList():
     filters = fetch_list.last_followed.split(',')
     result = {
         'screen_name': fetch_list.listname,
-        'followings_count': filters[0],
-        'followers_count': filters[1],
-        'likes_count': filters[2],
-        'tweets_count': filters[3]
+        'followings_count': int(filters[0]),
+        'followers_count': int(filters[1]),
+        'likes_count': int(filters[2]),
+        'tweets_count': int(filters[3])
     }
     result['users'] = [{ 'screen_name': ii.name } for ii in Following.query.filter_by(poolid=plid).all()]
     return jsonify({'result': result})

@@ -21,6 +21,21 @@ def stopFetching():
     # print session, '########### 3'
     return jsonify({'result': 'success'})
 
+@user_routes.route('/getFetchList', methods=['POST'])
+def getFetchList():
+    plid = request.json.get('id')
+    fetch_list = Pool.query.get(plid)
+    filters = fetch_list.last_followed.split(',')
+    result = {
+        'screen_name': fetch_list.listname,
+        'followings_count': filters[0],
+        'followers_count': filters[1],
+        'likes_count': filters[2],
+        'tweets_count': filters[3]
+    }
+    result['users'] = [{ 'screen_name': ii.name } for ii in Following.query.filter_by(poolid=plid).all()]
+    return jsonify({'result': result})
+
 @user_routes.route('/findUsers', methods=['POST'])
 def findUsers():
     result = {}

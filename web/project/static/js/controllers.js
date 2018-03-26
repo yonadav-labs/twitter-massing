@@ -223,7 +223,6 @@ myApp
                 $scope.fetching = true;
               }
             })
-            console.log($scope.fetching);
           })
           .catch(function(result) {
             $scope.error = true;
@@ -532,7 +531,7 @@ myApp
         });
       };
       */
-      $scope.openUploadList = function() {
+      $scope.openUploadList = function(fetchedId=0) {
         var modalInstance = $uibModal.open({
           animation: false,
           ariaLabelledBy: 'modal-title-bottom',
@@ -543,10 +542,24 @@ myApp
           resolve: {
             accountId: function() {
               return $scope.accountId;
-            }
+            },
+            fetchedId: fetchedId
           },
-          controller: function($scope, $uibModalInstance, AuthService, accountId) {
+          controller: function($scope, $uibModalInstance, AuthService, accountId, fetchedId) {
+            $scope.fetchedId = fetchedId;
             $scope.fetching = false;
+
+            if (fetchedId) {
+              AuthService.getFetchList(fetchedId)
+                .then(function(result) {
+                  $scope.linkedUsers = result.users;
+                  $scope.fetching = false;
+                })
+                .catch(function(result) {
+                  console.log(result);
+                });
+            }
+
             $scope.cancel = function() {
               $uibModalInstance.dismiss('cancel');
             };

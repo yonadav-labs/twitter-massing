@@ -181,7 +181,7 @@
             <span ng-if="list.complete_status" class="text-success glyphicon glyphicon-ok" aria-hidden="true"></span>
           </td>
           <td class="text-center">
-            <a ng-click="delList(list.id)" title="Upload this List"
+            <a ng-click="openUploadList(list.id)" title="Upload this List"
                class="btn-delete" style="margin-right: 7px; font-size: 15px;">              
               <span class="glyphicon glyphicon-upload" aria-hidden="true" ng-if="list.type=='Fetching' && list.complete_status"></span>
             </a>

@@ -31,7 +31,8 @@ angular.module('myApp').factory('AuthService',
         changeFollowScheduleStatus:changeFollowScheduleStatus,
         changeUnFollowScheduleStatus:changeUnFollowScheduleStatus,
         getListUsersByName:getListUsersByName,
-        stopFetching: stopFetching
+        stopFetching: stopFetching,
+        getFetchList: getFetchList
       });
 
       function isLoggedIn() {
@@ -50,6 +51,22 @@ angular.module('myApp').factory('AuthService',
         var deferred = $q.defer();
 
         $http.post('/user/stopFetching',{})
+        .success(function (data, status) {
+          deferred.resolve(data);
+        })
+        .error(function (data) {
+          deferred.reject(data);
+        });
+
+        return deferred.promise;
+      }
+
+      function getFetchList(fetchListId) {
+        var deferred = $q.defer();
+
+        $http.post('/user/getFetchList',{
+          id: fetchListId
+        })
         .success(function (data, status) {
           deferred.resolve(data);
         })
@@ -626,14 +643,10 @@ angular.module('myApp').factory('AuthService',
           .error(function (data) {
             deferred.reject(data.result);
           });
-
-        // return promise object
         return deferred.promise;
-
       }
       function getUserStatus() {
         return $http.get('/status')
-        // handle success
           .success(function (data) {
             if (data.result.status) {
               user = data.result.user;
@@ -641,10 +654,8 @@ angular.module('myApp').factory('AuthService',
               user = false;
             }
           })
-          // handle error
           .error(function (data) {
             user = false;
           });
       }
-
     }]);

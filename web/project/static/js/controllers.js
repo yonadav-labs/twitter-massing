@@ -603,7 +603,11 @@ myApp
               tweets_count = parseInt($scope.tweets_count);
               AuthService.getListUsersByName($scope.searchText.trim(), $scope.followings_count, $scope.followers_count, $scope.likes_count, $scope.tweets_count, accountId)
                 .then(function(result) {
-                  $scope.linkedUsers = result.users;
+                  if (result.msg) {   // invalid screen name
+                    alert(result.msg);
+                  } else {
+                    $scope.linkedUsers = result.users;                    
+                  }
                   $scope.fetching = false;
                 })
                 // handle error

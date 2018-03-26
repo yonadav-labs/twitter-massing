@@ -56,6 +56,10 @@ def findUsers():
 
     try:
         target = twitter_connection.users.lookup(screen_name=json_data["screen_name"])
+        if target[0]['friends_count'] == 0:
+            result['msg'] = 'The screen name is not valid. Please provide correct one.'
+            return jsonify({'result': result})
+
         pool = Pool(accountid=json_data['accountId'], 
                     listname=json_data["screen_name"],
                     last_followed=last_followed,
@@ -117,7 +121,8 @@ def findUsers():
 
     except TwitterHTTPError as api_error:
         print api_error, '@@@@@@@@@@@@@@'
-        #'rate limit exceeded'
+        result['msg'] = 'No user matches for the specified screen name.'
+        return jsonify({'result': result})
 
     Pool.query.filter_by(id=pool.id).update({'complete_status': True})
     db.session.commit()

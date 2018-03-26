@@ -254,16 +254,21 @@ myApp
           });
       }
       $scope.delList = function(id) {
-        AuthService.delList(id)
-          .then(function(result) {
-            $scope.success = true;
-            $scope.successMessage = result.msg;
-            initController();
-          })
-          .catch(function(result) {
-            $scope.error = true;
-            $scope.errorMessage = result.msg;
-          });
+        var r = confirm("Are you sure to delete?");
+        if (r == true) {
+          AuthService.delList(id)
+            .then(function(result) {
+              $scope.success = true;
+              $scope.successMessage = result.msg;
+              initController();
+            })
+            .catch(function(result) {
+              $scope.error = true;
+              $scope.errorMessage = result.msg;
+            });
+        } else {
+            return false;
+        }        
       }
       $scope.delFollowSchedule = function(id) {
         AuthService.delFollowSchedule(id)

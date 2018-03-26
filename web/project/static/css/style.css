@@ -290,4 +290,5 @@ tr.Uploading {
 
 .btn-delete {
     color: black;
+    cursor: pointer;
 }

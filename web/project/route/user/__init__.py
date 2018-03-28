@@ -53,10 +53,9 @@ def findUsers():
                                          json_data['followers_count'], 
                                          json_data['likes_count'], 
                                          json_data['tweets_count'])
-
     try:
         target = twitter_connection.users.lookup(screen_name=json_data["screen_name"])
-        if target[0]['friends_count'] == 0:
+        if target[0]['followers_count'] == 0:
             result['msg'] = 'The screen name is not valid. Please provide correct one.'
             return jsonify({'result': result})
 
@@ -65,13 +64,13 @@ def findUsers():
                     last_followed=last_followed,
                     started_on=datetime.datetime.now(),
                     type='Fetching',
-                    total_count=min(target[0]['friends_count'], 125000))
+                    total_count=min(target[0]['followers_count'], 125000))
         db.session.add(pool)
         db.session.commit()
 
         while cursor != 0 and loop_threshold > 0 and fetching:
             start_time = datetime.datetime.now()
-            results = twitter_connection.friends.ids(screen_name=json_data["screen_name"], cursor=cursor)
+            results = twitter_connection.followers.ids(screen_name=json_data["screen_name"], cursor=cursor)
             cursor = results['next_cursor']
             loop_threshold = loop_threshold -1
             current_app.logger.info(str(len(results['ids'])))

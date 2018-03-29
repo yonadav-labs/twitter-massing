@@ -107,34 +107,34 @@ def unfollow_task(accountId, max_unfollows, option):
                                                 app.config["CONSUMER_SECRET"]))
         print('start unfollow task')
         unfollows = auto_unfollow(twitter_connection=twitter_connection, max_unfollows=max_unfollows, option=option)
-        print (unfollows)
+        # print (unfollows)
 
 
 def auto_unfollow(twitter_connection, max_unfollows, option):
-    unfollows = 0
+    # unfollows = 0
     following = set(twitter_connection.friends.ids()["ids"])
-    followers = set(twitter_connection.followers.ids()["ids"])
+    # followers = set(twitter_connection.followers.ids()["ids"])
 
-    if(max_unfollows == -1):
-        max_unfollows = len(following)
+    # if(max_unfollows == -1):
+    #     max_unfollows = len(following)
 
-    if(option):
-        not_following_back = following
-    else:
-        not_following_back = following - followers
+    # if(option):
+    #     not_following_back = following
+    # else:
+    #     not_following_back = following - followers
 
-    if(len(not_following_back) > max_unfollows):
-        not_following_back = subset(not_following_back,max_unfollows)
+    # if(len(not_following_back) > max_unfollows):
+    #     not_following_back = subset(not_following_back,max_unfollows)
 
-    print len(not_following_back)
+    # print len(not_following_back)
 
-    for user_id in not_following_back:
-        try:
-            twitter_connection.friendships.destroy(user_id=user_id)
-            unfollows = unfollows + 1
-        except TwitterHTTPError as api_error:
-            print api_error
-            return unfollows
+    user_id = following[0]
+    # for user_id in not_following_back:
+    try:
+        twitter_connection.friendships.destroy(user_id=user_id)
+        # unfollows = unfollows + 1
+    except TwitterHTTPError as api_error:
+        print api_error, '############### unfollow '
     return unfollows
 
 

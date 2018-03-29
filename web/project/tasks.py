@@ -86,17 +86,6 @@ def auto_follow(twitter_connection, followings):
     return last_followed
 
 
-def subset(s,k):
-    r = set()
-    i = 0
-    for v in s:
-        if(i == k):
-            return r
-        r.add(v)
-        i = i + 1
-    return r
-
-
 @celery.task()
 def unfollow_task(accountId, max_unfollows, option):
     account = Account.query.filter_by(id=accountId).first()
@@ -112,13 +101,14 @@ def unfollow_task(accountId, max_unfollows, option):
 
 def auto_unfollow(twitter_connection, max_unfollows, option):
     following = twitter_connection.friends.ids()["ids"]
-    user_id = following[0]
+    if following:
+        user_id = following[0]
 
-    try:
-        twitter_connection.friendships.destroy(user_id=user_id)
-    except TwitterHTTPError as api_error:
-        print api_error, '############### unfollow '
-    return 'unfollows'
+        try:
+            twitter_connection.friendships.destroy(user_id=user_id)
+        except TwitterHTTPError as api_error:
+            print api_error, '############### unfollow '
+        return 'unfollows'
 
 
 @celery.on_after_configure.connect

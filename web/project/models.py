@@ -15,7 +15,6 @@ class Base(db.Model):
     def to_dict(self, show=None, hide=None, path=None, show_all=None):
         """ Return a dictionary representation of this model.
         """
-
         if not show:
             show = []
         if not hide:
@@ -149,7 +148,7 @@ class Account(Base):
     oauth_secret = db.Column(db.String(255), nullable=False)
     follow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
     unfollow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
-    unfollow_schedule_option = db.Column(db.Integer, nullable=False, default=0)
+    unfollow_schedule_option = db.Column(db.Boolean, nullable=False, default=False)
     user = relationship("User")
 
     def __init__(self, userid, fullname, screenname, description, avatar_url, followers, followings, oauth_token,

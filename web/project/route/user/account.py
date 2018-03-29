@@ -49,7 +49,10 @@ def changeUnFollowScheduleStatus():
     json_data = request.json
     account = Account.query.filter_by(id=json_data['accountId']).first()
     if(account):
-        Account.query.filter_by(id=json_data['accountId']).update({'unfollow_schedule_status':json_data['unfollow_schedule_status'],'unfollow_schedule_option':json_data['unfollow_schedule_option']})
+        Account.query.filter_by(id=json_data['accountId']) \
+                     .update({
+                        'unfollow_schedule_status':json_data['unfollow_schedule_status'],
+                        'unfollow_schedule_option':json_data['unfollow_schedule_option']})
         db.session.commit()
         restart_celery_beat()
         result['status'] = 1

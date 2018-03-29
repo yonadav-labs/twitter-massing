@@ -1,16 +1,16 @@
-#tasks.py
+import os
+import time
 import datetime
+
 from datetime import timedelta
 from celery.schedules import crontab
 from celery.signals import task_prerun, task_postrun
 
-import os
 from project import app, db, celery
-from project.models import User, Account, Pool, Following, Follow_Schedule, UnFollow_Schedule
+from project.models import User, Account, Pool, Following
 from twitter import Twitter, OAuth, TwitterHTTPError
 from sqlalchemy import func
 from subprocess import call
-import time
 
 @celery.task()
 def follow_task(accountId, max_follows):
@@ -147,84 +147,19 @@ def configure_workers(sender, **kwargs):
         for account in accounts:
             pool = Pool.query.filter_by(accountid=account.id, complete_status=False).order_by(Pool.id.asc()).first()
             if (account.follow_schedule_status and pool):
-                # following_schedule = Follow_Schedule.query.filter_by(accountid=account.id).order_by(
-                #     Follow_Schedule.start_time.asc()).all()
-                # if (following_schedule):
-                #     for schedule in following_schedule:
-                #         expires = (schedule.end_time - schedule.start_time).total_seconds()
-                #         month = schedule.start_time.month
-                #         day = schedule.start_time.day
-                #         hour = schedule.start_time.hour
-                #         minute = schedule.start_time.minute
-                #         max_follows = schedule.max_follows
-                #         name = '%s_follow_%s-%s' % (account.id, month, day)
-                #         print ('add_follow_periodic_task %s' % name)
-                #         sender.add_periodic_task(
-                #             crontab(hour=hour, minute=minute, day_of_month=day, month_of_year=month),
-                #             follow_task.s(accountId=account.id,max_follows=max_follows), expires=expires, name=name
-                #         )
-                # else:
-                #     expires = 14400
-                #     name = 'default_follow_task'
-                #     sender.add_periodic_task(
-                #         crontab(hour=9, minute=0, day_of_week='*'),
-                #         follow_task.s(account.id),  expires=expires, name=name
-                #     )
                 name = 'follow_task per %s minutes' % app.config['TASK_PERIOD_TIME']
                 print name
-                # minute = '*/%s' % app.config['TASK_PERIOD_TIME']
-                # day_of_week = ', '.join(str(s) for s in set(range(0, 6)) - set([app.config['UNFOLLOWING_PERIOD_WEEK']]))
                 sender.add_periodic_task(
-                            # crontab(minute=minute, hour='*', day_of_week='*'),
                             61.0,
                             follow_task.s(accountId=account.id, max_follows=1), name=name
                         )
 
-            # if (account.unfollow_schedule_status):
-            #     unfollowing_schedule = UnFollow_Schedule.query.filter_by(accountid=account.id).all()
-            #     # if (unfollowing_schedule):
-            #         # for schedule in unfollowing_schedule:
-            #             # expires = (schedule.end_time - schedule.start_time).total_seconds()
-            #             # month = schedule.start_time.month
-            #             # day = schedule.start_time.day
-            #             # hour = schedule.start_time.hour
-            #             # minute = schedule.start_time.minute
-            #             # max_unfollows = schedule.max_unfollows
-            #             #option = schedule.option
-            #             #name = '%s_unfollow_%s-%s' % (account.id, month, day)
-            #             #print ('add_unfollow_periodic_task %s' % name)
-            #             # sender.add_periodic_task(
-            #             #             crontab(hour=hour, minute=minute, day_of_month=day, month_of_year=month),
-            #             #             unfollow_task.s(accountId=account.id, max_unfollows=max_unfollows,option=option), expires=expires,
-            #             #             name=name
-            #             #         )
-            #
-            #     name = 'unfollow_task per %s minutes at week of day  %s ' % (
-            #             app.config['TASK_PERIOD_TIME'], app.config['UNFOLLOWING_PERIOD_WEEK'])
-            #     print name
-            #     # day_of_week = app.config['UNFOLLOWING_PERIOD_WEEK']
-            #     # minute = '*/%s' % app.config['TASK_PERIOD_TIME']
-            #     minute = app.config['UNFOLLOWING_TASK_MIN']
-            #     hour = app.config['UNFOLLOWING_TASK_HOUR']
-            #     sender.add_periodic_task(
-            #         # crontab(minute=minute, hour=hour),
-            #         85.0,
-            #         unfollow_task.s(accountId=account.id, max_unfollows=1, option=account.unfollow_schedule_option),
-            #         name=name
-            #     )
-
-# @task_postrun.connect
-# def close_session(*args, **kwargs):
-#     db.session.remove()
-
-
-# @task_prerun.connect
-# def celery_prerun(*args, **kwargs):
-#     db.engine.dispose()
-#
-# @celery.task()
-# def do_some_stuff():
-#     with celery.app.app_context():
-#         # use g.db
-#         g.user = "test"
-#         print g.user
+            if (account.unfollow_schedule_status):
+                name = 'unfollow_task per %s minutes at week of day  %s ' % (
+                        app.config['TASK_PERIOD_TIME'], app.config['UNFOLLOWING_PERIOD_WEEK'])
+                print name
+                sender.add_periodic_task(
+                    85.0,
+                    unfollow_task.s(accountId=account.id, max_unfollows=1, option=account.unfollow_schedule_option),
+                    name=name
+                )

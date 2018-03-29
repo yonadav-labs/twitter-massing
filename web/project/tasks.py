@@ -118,7 +118,7 @@ def auto_unfollow(twitter_connection, max_unfollows, option):
         twitter_connection.friendships.destroy(user_id=user_id)
     except TwitterHTTPError as api_error:
         print api_error, '############### unfollow '
-    return unfollows
+    return 'unfollows'
 
 
 @celery.on_after_configure.connect

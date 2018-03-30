@@ -1,6 +1,4 @@
 # project/models.py
-
-
 import datetime
 import json
 
@@ -148,7 +146,7 @@ class Account(Base):
     oauth_secret = db.Column(db.String(255), nullable=False)
     follow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
     unfollow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
-    unfollow_schedule_option = db.Column(db.Boolean, nullable=False, default=False)
+    unfollow_schedule_option = db.Column(db.Boolean, default=False)
     user = relationship("User")
 
     def __init__(self, userid, fullname, screenname, description, avatar_url, followers, followings, oauth_token,
@@ -168,25 +166,6 @@ class Account(Base):
 
     def __repr__(self):
         return '<Account {0}>'.format(self.id)
-
-
-#
-# class List(Base):
-#     __tablename__ = "lists"
-#
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     name = db.Column(db.String(255), nullable=False)
-#     total_count = db.Column(db.Integer, nullable=False)
-#
-#     def __init__(self, name, total_count):
-#         self.name = name
-#         self.total_count = total_count
-#
-#     def get_id(self):
-#         return self.id
-#
-#     def __repr__(self):
-#         return '<List {0}>'.format(self.id)
 
 
 class Pool(Base):

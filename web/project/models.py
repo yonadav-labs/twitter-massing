@@ -148,7 +148,7 @@ class Account(Base):
     oauth_secret = db.Column(db.String(255), nullable=False)
     follow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
     unfollow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
-    unfollow_schedule_option = db.Column(db.Boolean, nullable=False, default=False)
+    unfollow_schedule_option = db.Column(db.Boolean, default=False)
     user = relationship("User")
 
     def __init__(self, userid, fullname, screenname, description, avatar_url, followers, followings, oauth_token,

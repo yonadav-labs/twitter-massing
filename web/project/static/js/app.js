@@ -15,12 +15,12 @@ myApp.config(function ($routeProvider) {
       controller: 'logoutController',
       access: {restricted: true}
     })
-      .when('/profile/:id', {
+    .when('/profile/:id', {
       controller: 'profileController',
       templateUrl: 'static/partials/user/profile.html',
       access: {restricted: true}
     })
-       .when('/account/:user', {
+    .when('/account/:user', {
       controller: 'accountController',
       templateUrl: 'static/partials/user/account.html',
       access: {restricted: true}
@@ -28,8 +28,7 @@ myApp.config(function ($routeProvider) {
     .otherwise({
       redirectTo: '/account/:user'
     });
-})
-;
+});
 
 myApp.run(function ($rootScope, $location, $route, AuthService) {
   $rootScope.$on('$routeChangeStart',

@@ -11,6 +11,7 @@ angular.module('myApp').factory('AuthService',
         login: login,
         logout: logout,
         addUser: addUser,
+        delUser: delUser,
         getUserStatus: getUserStatus,
         getUser: getUser,
         listUsers: listUsers,
@@ -177,7 +178,26 @@ angular.module('myApp').factory('AuthService',
 
         // return promise object
         return deferred.promise;
+      }
 
+      function delUser(user_id) {
+        var deferred = $q.defer();
+
+        $http.post('/admin/delUser', {
+          user_id: user_id
+        })
+        .success(function (data, status) {
+          if (status === 200 && data.result.status > 0) {
+            deferred.resolve(data.result);
+          } else {
+            deferred.reject(data.result);
+          }
+        })
+        .error(function (data) {
+          deferred.reject(data.result);
+        });
+
+        return deferred.promise;
       }
 
       function listUsers() {

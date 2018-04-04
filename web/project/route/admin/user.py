@@ -26,6 +26,24 @@ def addUser():
     return jsonify({'result': result})
 
 
+@admin_routes.route('/delUser', methods=['POST'])
+def delUser():
+    result = {}
+    user_id = request.json['user_id']
+
+    try:        
+        user = User.query.get(user_id)
+        db.session.delete(user)
+        db.session.commit()
+        result['status'] = 1
+        result['msg'] = 'Sucessfully deleted.'
+    except:
+        result['status'] = 0
+        result['msg'] = 'The user does not exist.'
+    db.session.close()
+    return jsonify({'result': result})
+
+
 @admin_routes.route('/changePass', methods=['POST'])
 def changePass():
     result = {}

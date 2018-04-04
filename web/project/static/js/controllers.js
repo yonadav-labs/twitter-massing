@@ -89,10 +89,32 @@ myApp
           })
       }
 
-
       $scope.link_toggle = function(index) {
         $scope.users[index]['show_deck'] = !$scope.users[index]['show_deck'];
       };
+      
+      $scope.delUser = function(user_id) {
+        var r = confirm("Are you sure to delete this user?");
+        if (r == true) {
+          AuthService.delUser(user_id)
+          .then(function(result) {
+            $scope.success = true;
+            $scope.error = false;
+            $scope.successMessage = result.msg;
+            $scope.disabled = false;
+            $scope.registerForm = {};
+            $scope.state = false;
+            initController();
+          })
+          .catch(function(result) {
+            $scope.error = true;
+            $scope.errorMessage = result.msg;
+            $scope.disabled = false;
+            $scope.registerForm = {};
+          });            
+        }
+      };
+
       $scope.addUser = function() {
 
         // initial values

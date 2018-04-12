@@ -100,7 +100,12 @@ def unfollow_task(accountId, max_unfollows, option):
 
 
 def auto_unfollow(twitter_connection, max_unfollows, option):
-    following = twitter_connection.friends.ids()["ids"]
+    try:
+        following = twitter_connection.friends.ids()["ids"]
+    except TwitterHTTPError as api_error:
+        print api_error, '############### unfollow '
+        following = []
+
     for user_id in following:
         try:
             twitter_connection.users.lookup(user_id=user_id)
@@ -121,7 +126,7 @@ def configure_workers(sender, **kwargs):
         for account in accounts:
             pool = Pool.query.filter_by(accountid=account.id, complete_status=False).order_by(Pool.id.asc()).first()
             if (account.follow_schedule_status and pool):
-                name = 'follow_task per %s minutes' % app.config['TASK_PERIOD_TIME']
+                name = 'Follow task for {} ({}) on {}'.format(account.fullname, account.id, pool.listname)
                 print name
                 sender.add_periodic_task(
                             61.0,
@@ -129,11 +134,12 @@ def configure_workers(sender, **kwargs):
                         )
 
             if (account.unfollow_schedule_status):
-                name = 'unfollow_task per %s minutes at week of day  %s ' % (
-                        app.config['TASK_PERIOD_TIME'], app.config['UNFOLLOWING_PERIOD_WEEK'])
+                name = 'Unfollow task for {} ({})'.format(account.fullname, account.id)
                 print name
-                sender.add_periodic_task(
+                ss = sender.add_periodic_task(
                     85.0,
                     unfollow_task.s(accountId=account.id, max_unfollows=1, option=account.unfollow_schedule_option),
                     name=name
                 )
+                print account.fullname, '@@@@@@@', ss
+

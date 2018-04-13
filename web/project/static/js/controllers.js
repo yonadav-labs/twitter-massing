@@ -508,56 +508,6 @@ myApp
           $log.info('modal-component dismissed at: ' + new Date());
         });
       };
-      /*
-      $scope.openUploadList = function () {
-        var modalInstance = $uibModal.open({
-          animation: false,
-          ariaLabelledBy: 'modal-title-bottom',
-          ariaDescribedBy: 'modal-body-bottom',
-          templateUrl: '/static/partials/user/modal/addCSVUploadList.html',
-          size: 'lg',
-          resolve: {
-            accountId: function () {
-              return $scope.accountId;
-            }
-          },
-          controller: function ($scope, $uibModalInstance, AuthService, accountId) {
-            $scope.cancel = function () {
-              $uibModalInstance.dismiss('cancel');
-            };
-            $scope.uploadList = function () {
-              AuthService.uploadList(accountId, $scope.listname, $scope.listfile)
-                .then(function (result) {
-                  var rs = {};
-                  rs.success = true;
-                  rs.successMessage = result.msg;
-                  $uibModalInstance.close(rs);
-                })
-                // handle error
-                .catch(function (result) {
-                  var rs = {};
-                  rs.error = true;
-                  rs.errorMessage = result.msg;
-                  $uibModalInstance.close(rs);
-                });
-            }
-          }
-        });
-        modalInstance.result.then(function (rs) {
-          if (rs.success) {
-            $scope.success = rs.success;
-            $scope.successMessage = rs.successMessage;
-            initController();
-          }
-          else {
-            $scope.error = rs.error;
-            $scope.errorMessage = rs.errorMessage;
-          }
-        }, function () {
-          $log.info('modal-component dismissed at: ' + new Date());
-        });
-      };
-      */
       $scope.openUploadList = function(fetchedId=0) {
         var modalInstance = $uibModal.open({
           animation: false,
@@ -575,6 +525,7 @@ myApp
           controller: function($scope, $uibModalInstance, AuthService, accountId, fetchedId) {
             $scope.fetchedId = fetchedId;
             $scope.fetching = false;
+            $scope.uploading = false;
 
             if (fetchedId) {
               AuthService.getFetchList(fetchedId)
@@ -667,12 +618,15 @@ myApp
                 return;
               }
 
+              $scope.uploading = true;
+
               AuthService.uploadList(accountId, $scope.listname, $scope.users)
                 .then(function(result) {
                   var rs = {};
                   rs.success = true;
                   rs.successMessage = result.msg;
                   $uibModalInstance.close(rs);
+                  $scope.uploading = false;
                 })
                 // handle error
                 .catch(function(result) {
@@ -680,6 +634,7 @@ myApp
                   rs.error = true;
                   rs.errorMessage = result.msg;
                   $uibModalInstance.close(rs);
+                  $scope.uploading = false;
                 });
             }
           }

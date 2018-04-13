@@ -205,11 +205,11 @@ def uploadList():
     listname = json_data['listname']
     listusers = json_data['listusers']
 
-    pool = Pool.query.filter_by(accountid=accountId, listname=listname).first()
-    if (pool):
-        result['status'] = 0
-        result['msg'] = 'List name is existed'
-        return jsonify({'result': result})
+    # pool = Pool.query.filter_by(accountid=accountId, listname=listname).first()
+    # if (pool):
+    #     result['status'] = 0
+    #     result['msg'] = 'List name is existed'
+    #     return jsonify({'result': result})
 
     if len(listusers) < 1:
         result['status'] = 0

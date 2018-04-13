@@ -94,7 +94,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-8">
-          <button data-bb-handler="Add" ng-disabled="!(users && users.length > 0)" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
+          <button data-bb-handler="Add" ng-disabled="!(users && users.length > 0) || uploading" class="btn btn-md btn-success btn-add-schedule" ng-click="uploadList()">
             Upload
           </button>
           <button data-bb-handler="cancel" class="btn btn-md btn-danger pull-right" ng-click="cancel()">
@@ -102,6 +102,14 @@
           </button>          
         </div>
       </div>
+      <div class="form-group" ng-show="uploading">
+        <div class="col-sm-offset-3">
+          <div class="col-sm-9">
+            <div class="spinner"></div>
+            <span class="fetchig-user">Uploading list ...</span>
+          </div>
+        </div>
+      </div>      
     </div>
     </div>
   </div>

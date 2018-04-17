@@ -13,18 +13,31 @@ from sqlalchemy import func
 from subprocess import call
 
 @celery.task()
-def follow_task(accountId, max_follows):
+def celery_restart_beat():
+    curfilePath = os.path.abspath(__file__)
+    curDir = os.path.abspath(
+        # this will return current directory in which python file resides.
+        os.path.join(curfilePath, os.pardir))  
+    parentDir = os.path.abspath(os.path.join(curDir, os.pardir))
+    script_path = parentDir + "/run_restart_celery_beat.sh"
+    call(["bash",script_path])
+
+@celery.task()
+def follow_task(accountId, max_follows, detail):
     account = Account.query.filter_by(id=accountId).first()
     if (account):
-        pool = Pool.query.filter_by(accountid=accountId, complete_status=False).order_by(Pool.id.asc()).first()
+        pool = Pool.query.filter_by(accountid=accountId, complete_status=False) \
+                         .order_by(Pool.id.asc()).first()
         if(pool):
             twitter_connection = Twitter(auth=OAuth(account.oauth_token,
                                                     account.oauth_secret,
                                                     app.config["CONSUMER_KEY"],
                                                     app.config["CONSUMER_SECRET"]))
-            followings = Following.query.filter_by(poolid=pool.id, status=-1).order_by(Following.id.asc()).limit(max_follows).all()
-            print('start follow task')
-            last_followed = auto_follow(twitter_connection=twitter_connection, followings=followings)
+            followings = Following.query.filter_by(poolid=pool.id, status=-1) \
+                                        .order_by(Following.id.asc()) \
+                                        .limit(max_follows).all()
+            
+            last_followed = auto_follow(twitter_connection=twitter_connection, followings=followings, detail=detail)
             follows = db.session.query(func.count(Following.id)).filter(Following.status == 1, Following.poolid == pool.id).scalar()
             Pool.query.filter_by(id=pool.id).update({'progress': follows})
             db.session.commit()
@@ -45,19 +58,8 @@ def follow_task(accountId, max_follows):
             print 'there are no following task.'
     db.session.close()
 
-
-@celery.task()
-def celery_restart_beat():
-    curfilePath = os.path.abspath(__file__)
-    curDir = os.path.abspath(
-        os.path.join(curfilePath, os.pardir))  # this will return current directory in which python file resides.
-    parentDir = os.path.abspath(os.path.join(curDir, os.pardir))
-    script_path = parentDir + "/run_restart_celery_beat.sh"
-    call(["bash",script_path])
-
-
-
-def auto_follow(twitter_connection, followings):
+def auto_follow(twitter_connection, followings, detail):
+    print '============== START ============ ( {} )'.format(detail)
     last_followed = None
     for following in followings:
         try:
@@ -65,7 +67,7 @@ def auto_follow(twitter_connection, followings):
             Following.query.filter_by(id=following.id).update({'status': 1})
             last_followed = following.name
         except TwitterHTTPError as api_error:
-            print '@@@@', api_error, '@@@@@@@@@@@@@@'
+            print '##########', api_error, '########## FOLLOW', detail
             # quit on rate limit errors
             if "unable to follow more people at this time" in str(api_error).lower():
                 print("You are unable to follow more people at this time. "
@@ -83,37 +85,37 @@ def auto_follow(twitter_connection, followings):
             else:
                 print api_error
     db.session.commit()
+    print '------------- END ------------- ( {} )'.format(detail)
     return last_followed
 
 
 @celery.task()
-def unfollow_task(accountId, max_unfollows, option):
+def unfollow_task(accountId, max_unfollows, detail):
     account = Account.query.filter_by(id=accountId).first()
     if (account):
         twitter_connection = Twitter(auth=OAuth(account.oauth_token,
                                                 account.oauth_secret,
                                                 app.config["CONSUMER_KEY"],
                                                 app.config["CONSUMER_SECRET"]))
-        print('start unfollow task')
-        unfollows = auto_unfollow(twitter_connection=twitter_connection, max_unfollows=max_unfollows, option=option)
-        # print (unfollows)
+        unfollows = auto_unfollow(twitter_connection=twitter_connection, max_unfollows=max_unfollows, detail=detail)
 
 
-def auto_unfollow(twitter_connection, max_unfollows, option):
+def auto_unfollow(twitter_connection, max_unfollows, detail):
+    print '============== START ============ ( {} )'.format(detail)
     try:
         following = twitter_connection.friends.ids()["ids"]
     except TwitterHTTPError as api_error:
-        print api_error, '############### unfollow '
+        print '##########', api_error, '########## UNFOLLOW', detail
         following = []
 
     for user_id in following:
         try:
             twitter_connection.users.lookup(user_id=user_id)
             twitter_connection.friendships.destroy(user_id=user_id)
-            print user_id, '@@@@@@@@ unfollow'
             break
         except TwitterHTTPError as api_error:
-            print api_error, '############### unfollow '
+            print '##########', api_error, '########## UNFOLLOW'
+    print '------------- END ------------- ( {} )'.format(detail)
     return 'unfollows'
 
 
@@ -130,7 +132,7 @@ def configure_workers(sender, **kwargs):
                 print name
                 sender.add_periodic_task(
                             61.0,
-                            follow_task.s(accountId=account.id, max_follows=1), name=name
+                            follow_task.s(accountId=account.id, max_follows=1, detail=name), name=name
                         )
 
             if (account.unfollow_schedule_status):
@@ -138,8 +140,7 @@ def configure_workers(sender, **kwargs):
                 print name
                 ss = sender.add_periodic_task(
                     85.0,
-                    unfollow_task.s(accountId=account.id, max_unfollows=1, option=account.unfollow_schedule_option),
+                    unfollow_task.s(accountId=account.id, max_unfollows=1, detail=name),
                     name=name
                 )
-                print account.fullname, '@@@@@@@', ss
 

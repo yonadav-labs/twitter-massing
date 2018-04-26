@@ -10,10 +10,19 @@ from . import user_routes
 def getAccountsByUserId():
     json_data = request.json
     accounts = Account.query.filter_by(userid=json_data['userid']).all()
-    return jsonify({'result': [account.to_dict(
-        show=['id', 'userid', 'screenname', 'followings', 'followers', 'fullname', 'description', 'avatar_url',
-              'follow_schedule_status', 'unfollow_schedule_status','unfollow_schedule_option']) for
-        account in accounts]})
+    
+    result = []
+    for account in accounts:
+        account_ = account.to_dict(show=['id', 'userid', 'screenname', 'fullname', 
+                                         'description', 'avatar_url', 'follow_schedule_status', 
+                                         'unfollow_schedule_status', 'unfollow_schedule_option'])
+
+        user = twitter_connection.users.lookup(screen_name=account.screenname)[0]
+        account_['followers'] = user['followers_count']
+        account_['followings'] = user['friends_count']
+        result.append(account_)
+
+    return jsonify({'result': result})
 
 
 @user_routes.route('/getAccountById', methods=['POST'])  # param : userid

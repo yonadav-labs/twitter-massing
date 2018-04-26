@@ -85,7 +85,7 @@ def auto_follow(twitter_connection, followings, detail):
             else:
                 print api_error
     db.session.commit()
-    print '------------- END ------------- ( {} )'.format(detail)
+    print '--------------  END  -------------- ( {} )'.format(detail)
     return last_followed
 
 

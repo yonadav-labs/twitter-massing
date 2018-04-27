@@ -689,21 +689,23 @@ myApp
           $scope.errorMessage = "You have reached limit of accounts";
         }
       }
+
       $scope.delAccount = function(accountId) {
-        AuthService.delAccount(accountId)
-          .then(function(result) {
-            $scope.success = true;
-            $scope.successMessage = result.msg;
-            initController();
-          })
-          // handle error
-          .catch(function(result) {
-            $scope.error = true;
-            $scope.errorMessage = result.msg;
-
-          });
-
+        var r = confirm("Are you sure to delete this account?");
+        if (r == true) {
+          AuthService.delAccount(accountId)
+            .then(function(result) {
+              $scope.success = true;
+              $scope.successMessage = result.msg;
+              initController();
+            })
+            .catch(function(result) {
+              $scope.error = true;
+              $scope.errorMessage = result.msg;
+            });
+        }
       }
+
       $scope.openPools = function(accountId) {
         $location.path("/profile/" + accountId);
       }

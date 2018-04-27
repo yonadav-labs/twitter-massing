@@ -41,13 +41,20 @@ def follow_task(accountId, max_follows, detail):
             follows = db.session.query(func.count(Following.id)).filter(Following.status == 1, Following.poolid == pool.id).scalar()
             Pool.query.filter_by(id=pool.id).update({'progress': follows})
             db.session.commit()
-            if(last_followed != None):
+
+            if last_followed == "meet follow limit":
+                Account.query.filter_by(id=accountId).update({'follow_schedule_status': False})
+                db.session.commit()
+                celery_restart_beat.delay()
+            elif last_followed:
                 Pool.query.filter_by(id=pool.id).update({'last_followed': last_followed })
                 db.session.commit()
+
             if (pool.started_on == None):
                 now_time = datetime.datetime.now()
                 Pool.query.filter_by(id=pool.id).update({'started_on': now_time})
                 db.session.commit()
+
             followings = db.session.query(func.count(Following.id)).filter(Following.poolid == pool.id, Following.status == -1).scalar()
             if (followings < 1):
                 Pool.query.filter_by(id=pool.id).update({'complete_status': True})
@@ -73,7 +80,7 @@ def auto_follow(twitter_connection, followings, detail):
                 print("You are unable to follow more people at this time. "
                       "Wait a while before running the bot again or gain "
                       "more followers.")
-                return last_followed
+                return "meet follow limit"
             # don't print "already requested to follow" errors - they're frequent
             if "already requested to follow" in str(api_error).lower() or 'user must be age screened to perform this action' in str(api_error).lower():
                 Following.query.filter_by(id=following.id).update({'status': 1})

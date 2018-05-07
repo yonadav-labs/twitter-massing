@@ -146,6 +146,7 @@ class Account(Base):
     oauth_secret = db.Column(db.String(255), nullable=False)
     follow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
     unfollow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
+    activity = db.Column(db.Boolean, default=False)
     unfollow_schedule_option = db.Column(db.Boolean, default=False)
     user = relationship("User")
 

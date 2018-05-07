@@ -264,6 +264,21 @@ myApp
             initController();
           });
       }
+
+      $scope.changeActivity = function() {
+        AuthService.changeActivity($scope.accountId, $scope.account.activity)
+          .then(function(result) {
+            $scope.success = true;
+            $scope.successMessage = result.msg;
+            initController();
+          })
+          .catch(function(result) {
+            $scope.error = true;
+            $scope.errorMessage = result.msg;
+            initController();
+          });
+      }
+
       $scope.changeUnFollowScheduleStatus = function() {
         AuthService.changeUnFollowScheduleStatus($scope.accountId, $scope.account.unfollow_schedule_status, $scope.account.unfollow_schedule_option)
           .then(function(result) {

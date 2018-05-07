@@ -30,6 +30,7 @@ angular.module('myApp').factory('AuthService',
         delList: delList,
         delAccount:delAccount,
         changeFollowScheduleStatus:changeFollowScheduleStatus,
+        changeActivity: changeActivity,
         changeUnFollowScheduleStatus:changeUnFollowScheduleStatus,
         getListUsersByName:getListUsersByName,
         stopFetching: stopFetching,
@@ -613,17 +614,14 @@ angular.module('myApp').factory('AuthService',
         return deferred.promise;
 
       }
-      function changeFollowScheduleStatus(accountId, follow_schedule_status) {
 
-        // create a new instance of deferred
+      function changeFollowScheduleStatus(accountId, follow_schedule_status) {
         var deferred = $q.defer();
 
-        // send a post request to the server
         $http.post('/user/changeFollowScheduleStatus', {
           accountId:accountId,
           follow_schedule_status: follow_schedule_status
         })
-        // handle success
           .success(function (data, status) {
             if (status === 200 && data.result) {
               deferred.resolve(data.result);
@@ -631,15 +629,34 @@ angular.module('myApp').factory('AuthService',
               deferred.reject(data.result);
             }
           })
-          // handle error
           .error(function (data) {
             deferred.reject(data.result);
           });
 
-        // return promise object
         return deferred.promise;
-
       }
+
+      function changeActivity(accountId, activity) {
+        var deferred = $q.defer();
+
+        $http.post('/user/changeActivity', {
+          accountId: accountId,
+          activity: activity
+        })
+          .success(function (data, status) {
+            if (status === 200 && data.result) {
+              deferred.resolve(data.result);
+            } else {
+              deferred.reject(data.result);
+            }
+          })
+          .error(function (data) {
+            deferred.reject(data.result);
+          });
+
+        return deferred.promise;
+      }
+
       function changeUnFollowScheduleStatus(accountId, unfollow_schedule_status, unfollow_schedule_option) {
 
         // create a new instance of deferred

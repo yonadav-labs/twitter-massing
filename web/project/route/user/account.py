@@ -30,8 +30,9 @@ def getAccountById():
     json_data = request.json
     account = Account.query.filter_by(id=json_data['id']).first()
     return jsonify({'result': account.to_dict(
-        show=['id', 'userid', 'screenname', 'followings', 'followers', 'fullname', 'description', 'avatar_url',
-              'follow_schedule_status', 'unfollow_schedule_status','unfollow_schedule_option'])})
+        show=['id', 'userid', 'screenname', 'followings', 'followers', 'fullname', 
+              'description', 'avatar_url', 'activity', 'follow_schedule_status', 
+              'unfollow_schedule_status','unfollow_schedule_option'])})
 
 
 @user_routes.route('/changeFollowScheduleStatus', methods=['POST'])  # param : userid
@@ -48,6 +49,24 @@ def changeFollowScheduleStatus():
     else:
         result['status'] = 0
         result['msg'] = 'Occured error in change Follow Schedule status.'
+    db.session.close()
+    return jsonify({'result': result})
+
+
+@user_routes.route('/changeActivity', methods=['POST'])  # param : userid
+def changeActivity():
+    result = {}
+    json_data = request.json
+    account = Account.query.filter_by(id=json_data['accountId']).first()
+    if(account):
+        Account.query.filter_by(id=json_data['accountId']).update({'activity':json_data['activity']})
+        db.session.commit()
+        restart_celery_beat()
+        result['status'] = 1
+        result['msg'] = 'Successfully change activity status.'
+    else:
+        result['status'] = 0
+        result['msg'] = 'Occured error in change activity status.'
     db.session.close()
     return jsonify({'result': result})
 

@@ -3,7 +3,7 @@
 <div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
 <div ng-show="success" class="alert alert-success">{{successMessage}}</div>
 <div class="row row-eq-height">
-  <div class="col-md-6 col-sm-12">
+  <div class="col-md-4 col-sm-12">
     <div class="panel panel-default">
       <div class="panel-heading">
         Follows Schedule
@@ -26,19 +26,15 @@
           <table class="table table-striped">
             <thead>
             <tr>
-              <th>Start Date</th>
-              <th class="text-right">Start Time</th>
-              <th class="text-right">End Time</th>
-              <th class="text-right">Max. Follows</th>
+              <th>Started at</th>
+              <th class="text-right">Ended at</th>
               <th width="50" class="text-center">&nbsp;</th>
             </tr>
             </thead>
             <tbody>
             <tr class="follow-schedule-row" ng-repeat="schedule in follow_schedules">
               <td class="schedule-start-date">{{schedule.start_time | getDate }}</td>
-              <td class="text-right schedule-start-time">{{schedule.start_time | getTime }}</td>
               <td class="text-right schedule-end-time">{{schedule.end_time | getTime }}</td>
-              <td class="text-right max-follows">{{schedule.max_follows | getMax }}</td>
               <td class="text-center">
                 <a ng-click="delFollowSchedule(schedule.id)" title="Delete this schedule"
                    class="text-danger btn-delete">
@@ -62,7 +58,62 @@
     </div>
   </div>
 
-  <div class="col-md-6 col-sm-12">
+  <div class="col-md-4 col-sm-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Activity Schedule
+        <div class="flipswitch pull-right" style="margin-top:-4px;">
+          <input type="checkbox" name="flipswitch" class="flipswitch-cb" id="activity"  ng-model="account.activity" ng-Change="changeActivity()">
+          <label class="flipswitch-label" for="activity">
+            <div class="flipswitch-inner"></div>
+            <div class="flipswitch-switch"></div>
+          </label>
+        </div>
+        <div class="pull-right" style="margin-right:10px;">
+          <!--<a ng-click="openFollowSchedule()">-->
+            <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+            <!--Add schedule-->
+          <!--</a>-->
+        </div>
+      </div>
+      <div class="panel-body" style="max-height:400px;overflow-y:auto;">
+        <div class="table-responsive" id="follows_schedules">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Started at</th>
+              <th class="text-right">Ended at</th>
+              <th width="50" class="text-center">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="follow-schedule-row" ng-repeat="schedule in follow_schedules">
+              <td class="schedule-start-date">{{schedule.start_time | getDate }}</td>
+              <td class="text-right schedule-end-time">{{schedule.end_time | getTime }}</td>
+              <td class="text-center">
+                <a ng-click="delFollowSchedule(schedule.id)" title="Delete this schedule"
+                   class="text-danger btn-delete">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+              </td>
+            </tr>
+
+            <tr class="zero-records" ng-if="follow_schedules.length < 1">
+              <td colspan="5">Activities not scheduled.
+                <!--<a ng-click="openFollowSchedule()">-->
+                  <!--<span class="glyphicon glyphicon-time" aria-hidden="true"></span>-->
+                  <!--Click here to add a schedule.-->
+                <!--</a>-->
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 col-sm-12">
     <div class="panel panel-default">
       <div class="panel-heading">
         UnFollows Schedule
@@ -91,19 +142,15 @@
           <table class="table">
             <thead>
             <tr>
-              <th>Start Date</th>
-              <th class="text-right">Start Time</th>
-              <th class="text-right">End Time</th>
-              <th class="text-right">Max. Unfollows</th>
+              <th>Started at</th>
+              <th class="text-right">Ended at</th>
               <th width="50" class="text-center">&nbsp;</th>
             </tr>
             </thead>
             <tbody>
             <tr class="follow-schedule-row" ng-repeat="schedule in unfollow_schedules">
               <td class="schedule-start-date">{{schedule.start_time | getDate }}</td>
-              <td class="text-right schedule-start-time">{{schedule.start_time | getTime }}</td>
               <td class="text-right schedule-end-time">{{schedule.end_time | getTime }}</td>
-              <td class="text-right max-follows">{{schedule.max_unfollows | getMax }}</td>
               <td class="text-center">
                 <a ng-click="delUnFollowSchedule(schedule.id)" title="Delete this schedule"
                    class="text-danger btn-delete">

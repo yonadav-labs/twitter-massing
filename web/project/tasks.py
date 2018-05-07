@@ -1,5 +1,6 @@
 import os
 import time
+import random
 import datetime
 
 from datetime import timedelta
@@ -126,6 +127,21 @@ def auto_unfollow(twitter_connection, max_unfollows, detail):
     return 'unfollows'
 
 
+@celery.task()
+def like_tweets():
+    num_accounts = random.randint(5, 8)
+    followers = twitter_connection.followers.ids(screen_name=json_data["screen_name"])
+    accounts = random.sample(followers['ids'], num_accounts)
+    num_tweets = int(25/len(accounts))
+    tweets = []
+
+    for account in accounts:
+        tweets = tweets + account.time_line(count=nt)
+
+    for tweet in random.sample(tweets, random.randint(2, 10)):
+        tweet.like()
+
+
 @celery.on_after_configure.connect
 def configure_workers(sender, **kwargs):
     celery.control.purge()
@@ -138,7 +154,7 @@ def configure_workers(sender, **kwargs):
                 name = 'Follow task for {} ({}) on {}'.format(account.fullname, account.id, pool.listname)
                 print name
                 sender.add_periodic_task(
-                            61.0,
+                            88.0,
                             follow_task.s(accountId=account.id, max_follows=1, detail=name), name=name
                         )
 
@@ -146,7 +162,7 @@ def configure_workers(sender, **kwargs):
                 name = 'Unfollow task for {} ({})'.format(account.fullname, account.id)
                 print name
                 ss = sender.add_periodic_task(
-                    85.0,
+                    89.0,
                     unfollow_task.s(accountId=account.id, max_unfollows=1, detail=name),
                     name=name
                 )

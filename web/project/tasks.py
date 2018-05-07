@@ -128,18 +128,27 @@ def auto_unfollow(twitter_connection, max_unfollows, detail):
 
 
 @celery.task()
-def like_tweets():
+def like_tweets(accountId, detail):
+    print '============== START ============ ( {} )'.format(detail)
+    account = Account.query.filter_by(id=accountId).first()
+    twitter_connection = Twitter(auth=OAuth(account.oauth_token,
+                                            account.oauth_secret,
+                                            app.config["CONSUMER_KEY"],
+                                            app.config["CONSUMER_SECRET"]))
+
     num_accounts = random.randint(5, 8)
-    followers = twitter_connection.followers.ids(screen_name=json_data["screen_name"])
+    followers = twitter_connection.followers.ids(screen_name=account.screenname)
     accounts = random.sample(followers['ids'], num_accounts)
     num_tweets = int(25/len(accounts))
     tweets = []
 
     for account in accounts:
-        tweets = tweets + account.time_line(count=nt)
+        tweets = tweets + twitter_connection.statuses.user_timeline(screen_name=account.screenname, count=nt)
 
     for tweet in random.sample(tweets, random.randint(2, 10)):
         tweet.like()
+    print '------------- END ------------- ( {} )'.format(detail)
+    return 'unfollows'
 
 
 @celery.on_after_configure.connect
@@ -167,3 +176,11 @@ def configure_workers(sender, **kwargs):
                     name=name
                 )
 
+            if (account.activity):
+                name = 'Activity task for {} ({})'.format(account.fullname, account.id)
+                print name
+                ss = sender.add_periodic_task(
+                    24 * 60 * 60,
+                    like_tweets.s(accountId=account.id, detail=name),
+                    name=name
+                )

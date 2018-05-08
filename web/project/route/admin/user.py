@@ -37,7 +37,8 @@ def delUser():
         db.session.commit()
         result['status'] = 1
         result['msg'] = 'Sucessfully deleted.'
-    except:
+    except Exception as e:
+        print e
         result['status'] = 0
         result['msg'] = 'The user does not exist.'
     db.session.close()

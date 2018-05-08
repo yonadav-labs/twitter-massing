@@ -73,7 +73,6 @@ myApp
             AuthService.listUsers()
               .then(function(data) {
                 $scope.users = data.users;
-
               })
               // handle error
               .catch(function() {

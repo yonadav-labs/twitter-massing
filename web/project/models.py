@@ -148,7 +148,7 @@ class Account(Base):
     unfollow_schedule_status = db.Column(db.Boolean, nullable=False, default=False)
     activity = db.Column(db.Boolean, default=False)
     unfollow_schedule_option = db.Column(db.Boolean, default=False)
-    user = relationship("User")
+    user = relationship("User", backref=db.backref('children_account', cascade='all,delete'))
 
     def __init__(self, userid, fullname, screenname, description, avatar_url, followers, followings, oauth_token,
                  oauth_secret):
@@ -182,7 +182,7 @@ class Pool(Base):
     last_followed = db.Column(db.String(255))
     complete_status = db.Column(db.Boolean, nullable=False, default=False)
     total_count = db.Column(db.Integer, nullable=False, default=0)
-    account = relationship("Account")
+    account = relationship("Account", backref=db.backref('children_pool', cascade='all,delete'))
 
     def __init__(self, accountid, listname, type='Uploading', last_followed=None, total_count=0, started_on=None):
         self.accountid = accountid
@@ -206,7 +206,7 @@ class Following(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     poolid = db.Column(db.Integer, ForeignKey(Pool.id), nullable=False)
     name = db.Column(db.String(255), nullable=False)
-    pool = relationship("Pool")
+    pool = relationship("Pool", backref=db.backref('children_following', cascade='all,delete'))
     status = db.Column(db.Integer, nullable=False, default=-1)
 
     def __init__(self, poolid, name, status=-1):
@@ -229,7 +229,7 @@ class Follow_Schedule(Base):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     max_follows = db.Column(db.Integer, nullable=False, default=0)
-    account = relationship("Account")
+    account = relationship("Account", backref=db.backref('children_follow_schedule', cascade='all,delete'))
 
     def __init__(self, accountid, start_time, end_time, max_follows):
         self.accountid = accountid
@@ -253,7 +253,7 @@ class UnFollow_Schedule(Base):
     end_time = db.Column(db.DateTime, nullable=False)
     max_unfollows = db.Column(db.Integer, nullable=False, default=0)
     option = db.Column(db.Boolean, nullable=False, default=False)
-    account = relationship("Account")
+    account = relationship("Account", backref=db.backref('children_unfollow_schedule', cascade='all,delete'))
 
     def __init__(self, accountid, start_time, end_time, max_unfollows, option):
         self.accountid = accountid
@@ -275,7 +275,7 @@ class MissFollowing(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     poolid = db.Column(db.Integer, ForeignKey(Pool.id), nullable=False)
     name = db.Column(db.String(255), nullable=False)
-    list = relationship("Pool")
+    list = relationship("Pool", backref=db.backref('children_missfollowing', cascade='all,delete'))
 
     def __init__(self, listid, name):
         self.listid = listid

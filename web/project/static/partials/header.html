@@ -1,15 +1,18 @@
 <div class="header">
-    <h3 class="text-muted">Massing</h3>
+    <h3 class="text-muted"><a class="text-muted" href="#/" style="text-decoration: none;">Elite Social</a></h3>
     <nav>
-        <ul class="nav nav-pills pull-right">
-
+        <ul class="nav nav-pills pull-right" ng-if='isLoggedIn'>
             <li ng-if='!user.admin' role="presentation"><a href="#/account/{{user.name}}">Account</a></li>
-
             <li ng-if='user.admin' role="presentation"><a href="#/admin/listuser">User</a></li>
             <li ng-if='user.admin' role="presentation"><a href="#/admin/password">Password</a></li>
             <li ng-if='user.admin' role="presentation"><a href="#/admin/email">Email</a></li>
             <li role="presentation" ng-controller="logoutController">
                 <a ng-click='logout()'>Logout</a>
+            </li>
+        </ul>
+        <ul class="nav nav-pills pull-right" ng-if='!isLoggedIn'>
+            <li role="presentation" ng-controller="logoutController">
+                <a href="#/login">Login</a>
             </li>
         </ul>
     </nav>

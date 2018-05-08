@@ -13,11 +13,8 @@ myApp
         })
     }
   ])
-  .controller('loginController', ['$scope', '$location', 'AuthService',
-    function($scope, $location, AuthService) {
-
+  .controller('loginController', function($scope, $location, AuthService) {
       $scope.login = function() {
-
         // initial values
         $scope.error = false;
         $scope.disabled = true;
@@ -33,6 +30,8 @@ myApp
             } else {
               $location.path('/account/' + user.name);
             }
+            $scope.$parent.isLoggedIn = true;
+            $scope.$parent.user = user;
           })
           // handle error
           .catch(function() {
@@ -41,26 +40,21 @@ myApp
             $scope.disabled = false;
             $scope.loginForm = {};
           });
-
       };
-
     }
-  ])
-  .controller('logoutController', ['$scope', '$location', 'AuthService',
-    function($scope, $location, AuthService) {
-
+  )
+  .controller('logoutController', function($scope, $location, AuthService) {
       $scope.logout = function() {
-
         // call logout from service
         AuthService.logout()
           .then(function() {
             $location.path('/login');
+            $scope.$parent.isLoggedIn = false;
+            $scope.$parent.user = null;
           });
-
       };
-
     }
-  ])
+  )
   .controller('adminlistuserController', ['$scope', '$location', 'AuthService',
     function($scope, $location, AuthService) {
       $scope.adduser_state = false;
@@ -195,6 +189,7 @@ myApp
   .controller('profileController', function($scope, $routeParams, $location, AuthService, $uibModal, $log, $route) {
       $scope.state = false;
       $scope.fetching = false;
+      $scope.isLoggedIn = AuthService.isLoggedIn();
 
       $scope.toggle = function() {
         $scope.state = !$scope.state;
@@ -679,6 +674,7 @@ myApp
       };
       initController();
 
+      $scope.isLoggedIn = AuthService.isLoggedIn();
       function initController() {
         AuthService.getUserStatus()
           .then(function() {

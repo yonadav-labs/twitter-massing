@@ -155,7 +155,10 @@ def like_tweets(accountId, detail):
             pass
 
     for tweet in random.sample(tweets, random.randint(2, 10)):
-        api.create_favorite(tweet)
+        try:
+            api.create_favorite(tweet)
+        except Exception as e:
+            pass
 
     print '------------- END ------------- ( {} )'.format(detail)
     return 'unfollows'
@@ -190,7 +193,7 @@ def configure_workers(sender, **kwargs):
                 name = 'Activity task for {} ({})'.format(account.fullname, account.id)
                 print name
                 ss = sender.add_periodic_task(
-                    30,
+                    300,
                     # 24 * 60 * 60,
                     like_tweets.s(accountId=account.id, detail=name),
                     name=name

@@ -1,5 +1,6 @@
 import os
 import time
+import tweepy
 import random
 import datetime
 
@@ -136,6 +137,10 @@ def like_tweets(accountId, detail):
                                             app.config["CONSUMER_KEY"],
                                             app.config["CONSUMER_SECRET"]))
 
+    auth = tweepy.OAuthHandler(app.config["CONSUMER_KEY"], app.config["CONSUMER_SECRET"])
+    auth.set_access_token(account.oauth_token, account.oauth_secret)
+    api = tweepy.API(auth)
+
     num_accounts = random.randint(5, 8)
     followers = twitter_connection.followers.ids(screen_name=account.screenname)
     accounts = random.sample(followers['ids'], num_accounts)
@@ -143,10 +148,12 @@ def like_tweets(accountId, detail):
     tweets = []
 
     for account in accounts:
-        tweets = tweets + twitter_connection.statuses.user_timeline(screen_name=account.screenname, count=nt)
+        tweets_ = api.user_timeline(screen_name=account.screenname, count=nt)
+        tweets = tweets + [ii.id for ii in tweets_]
 
     for tweet in random.sample(tweets, random.randint(2, 10)):
-        tweet.like()
+        api.create_favorite(tweet)
+        
     print '------------- END ------------- ( {} )'.format(detail)
     return 'unfollows'
 

@@ -148,12 +148,15 @@ def like_tweets(accountId, detail):
     tweets = []
 
     for account in accounts:
-        tweets_ = api.user_timeline(screen_name=account.screenname, count=nt)
-        tweets = tweets + [ii.id for ii in tweets_]
+        try:
+            tweets_ = api.user_timeline(id=account, count=num_tweets)
+            tweets = tweets + [ii.id for ii in tweets_]
+        except Exception as e:
+            pass
 
     for tweet in random.sample(tweets, random.randint(2, 10)):
         api.create_favorite(tweet)
-        
+
     print '------------- END ------------- ( {} )'.format(detail)
     return 'unfollows'
 
@@ -187,7 +190,8 @@ def configure_workers(sender, **kwargs):
                 name = 'Activity task for {} ({})'.format(account.fullname, account.id)
                 print name
                 ss = sender.add_periodic_task(
-                    24 * 60 * 60,
+                    30,
+                    # 24 * 60 * 60,
                     like_tweets.s(accountId=account.id, detail=name),
                     name=name
                 )

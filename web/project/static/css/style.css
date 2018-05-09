@@ -292,3 +292,9 @@ tr.Uploading {
     color: black;
     cursor: pointer;
 }
+
+.img-help {
+    border: solid 2px #eee;
+    border-radius:  5px;
+    margin-bottom: 10px;
+}

@@ -193,8 +193,7 @@ def configure_workers(sender, **kwargs):
                 name = 'Activity task for {} ({})'.format(account.fullname, account.id)
                 print name
                 ss = sender.add_periodic_task(
-                    300,
-                    # 24 * 60 * 60,
+                    crontab(hour=random.randint(0, 5), minute=random.randint(0, 59)),
                     like_tweets.s(accountId=account.id, detail=name),
                     name=name
                 )

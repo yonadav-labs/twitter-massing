@@ -3,6 +3,7 @@
     <nav>
         <ul class="nav nav-pills pull-right" ng-if='isLoggedIn'>
             <li ng-if='!user.admin' role="presentation"><a href="#/account/{{user.name}}">Account</a></li>
+            <li ng-if='!user.admin' role="presentation"><a href="#/info">Info</a></li>            
             <li ng-if='user.admin' role="presentation"><a href="#/admin/listuser">User</a></li>
             <li ng-if='user.admin' role="presentation"><a href="#/admin/password">Password</a></li>
             <li ng-if='user.admin' role="presentation"><a href="#/admin/email">Email</a></li>
@@ -11,6 +12,7 @@
             </li>
         </ul>
         <ul class="nav nav-pills pull-right" ng-if='!isLoggedIn'>
+            <li ng-if='!user.admin' role="presentation"><a href="#/info">Info</a></li>
             <li role="presentation" ng-controller="logoutController">
                 <a href="#/login">Login</a>
             </li>

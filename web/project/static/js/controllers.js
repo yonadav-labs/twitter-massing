@@ -535,10 +535,10 @@ myApp
             $scope.fetchedId = fetchedId;
             $scope.fetching = false;
             $scope.uploading = false;
-            $scope.uploading = false;
-            
+            $scope.loading = false;
+
             if (fetchedId) {
-              $scope.uploading = true;
+              $scope.loading = true;
               AuthService.getFetchList(fetchedId)
                 .then(function(result) {
                   $scope.searchText = result.screen_name;
@@ -547,7 +547,7 @@ myApp
                   $scope.likes_count = result.likes_count;
                   $scope.tweets_count = result.tweets_count;
                   $scope.linkedUsers = result.users;
-                  $scope.uploading = false;
+                  $scope.loading = false;
                 })
                 .catch(function(result) {
                   console.log(result);

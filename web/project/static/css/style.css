@@ -298,3 +298,12 @@ tr.Uploading {
     border-radius:  5px;
     margin-bottom: 10px;
 }
+
+@font-face {
+  font-family: "nemoy";
+  src: url(fonts/nemoy/nemoy_medium-webfont.ttf) format("truetype");
+}
+
+.m-b-70 {
+    margin-bottom: 70px;
+}

@@ -11,6 +11,9 @@ routes = Blueprint('routes', __name__)
 def index():
     return app.send_static_file('index.html')
 
+@routes.route('/info')
+def info():
+    return app.send_static_file('info.html')
 
 @routes.route('/login', methods=['POST'])
 def login():
